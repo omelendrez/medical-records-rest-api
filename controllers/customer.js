@@ -40,26 +40,28 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const Status = require("../models").status;
-  const Company = require("../models").company;
   Customer.belongsTo(Status);
-  Customer.belongsTo(Company);
 
   return Customer
-    .findAll({
-      raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phone', 'email', 'contact', 'vat', 'companyId', [sequelize.col('company.name'), 'company'], 'statusId', [sequelize.col('status.name'), 'status']],
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations'
+      ],
       include: [{
-        model: Company,
-        where: {
-          id: sequelize.col('customer.companyId')
-        },
-        attributes: []
-      }, {
         model: Status,
         where: {
           id: sequelize.col('customer.statusId')
         },
-        attributes: []
+        attributes: [
+          'id',
+          'name'
+        ]
       }]
     })
     .then(customers => res

@@ -5,8 +5,14 @@ module.exports = (sequelize, DataTypes) => {
     date: DataTypes.DATE,
     diagnosis: DataTypes.STRING,
     treatment: DataTypes.STRING,
-    nextConsultation: DataTypes.DATE,
-    observations: DataTypes.STRING
+    nextConsultation: {
+      type: DataTypes.DATE,
+      defaultValue: null
+    },
+    observations: {
+      type: DataTypes.STRING,
+      defaultValue: null
+    }
   }, {});
   Consultation.associate = function (models) {
     // associations can be defined here

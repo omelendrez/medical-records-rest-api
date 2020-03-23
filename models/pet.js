@@ -1,6 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Pet = sequelize.define('pet', {
+    customerId: DataTypes.INTEGER,
     name: {
       type: DataTypes.STRING,
       validate: {
@@ -26,8 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     weight: DataTypes.STRING,
-    yearBorn: DataTypes.STRING,
-    observations: DataTypes.STRING,
+    yearBorn: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
+    observations: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     statusId: DataTypes.TINYINT
   }, {});
   Pet.associate = function (models) {

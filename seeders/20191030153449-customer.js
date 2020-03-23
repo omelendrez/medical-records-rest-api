@@ -7,6 +7,7 @@ module.exports = {
       address: 'Alberdi 2678',
       phone: '2915754922',
       email: 'omar.melendrez@gmail.com',
+      observations: '',
       statusId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -16,6 +17,7 @@ module.exports = {
       address: 'Su casa',
       phone: '123456',
       email: 'ema@gmail.com',
+      observations: '',
       statusId: 1,
       createdAt: new Date(),
       updatedAt: new Date()

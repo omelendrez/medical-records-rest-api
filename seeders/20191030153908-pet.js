@@ -3,6 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('pets', [{
+      customerId: 1,
       name: 'Foster',
       type: 'Can',
       breed: 'Ovejero Belga',
@@ -15,6 +16,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      customerId: 1,
       name: 'Michifuz',
       type: 'Felino',
       breed: 'Mestizo',

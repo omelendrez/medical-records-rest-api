@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     phone: DataTypes.STRING,
     email: DataTypes.STRING,
-    observations: DataTypes.STRING,
+    observations: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     statusId: DataTypes.TINYINT
   }, {});
   Customer.associate = function (models) {
