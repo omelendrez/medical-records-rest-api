@@ -39,6 +39,7 @@ const getAll = (req, res) => {
       tableHint: TableHints.NOLOCK,
       attributes: [
         'id',
+        'customerId',
         'name',
         'type',
         'breed',

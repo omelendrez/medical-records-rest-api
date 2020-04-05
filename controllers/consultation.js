@@ -33,7 +33,7 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   return Consultation
-    .findAll({
+    .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       attributes: [
         'id',
