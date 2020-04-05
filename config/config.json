@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "vmr_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "vmr",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone": "-03:00"
+  },
+  "test": {
+    "username": "vmr_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "vmr",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone": "-03:00"
+  },
+  "production": {
+    "username": "vmr_user",
+    "password": "M1a4$1t4E8r0",
+    "database": "vmr",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false,
+    "timezone": "-03:00"
+  }
+}

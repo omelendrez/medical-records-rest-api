@@ -1,14 +1,15 @@
 {
   "name": "medical-record-be",
   "version": "1.0.0",
-  "description": "Backend for Stock app",
+  "description": "Backend for vet medical record app",
   "main": "./bin/www",
   "scripts": {
     "dev": "node ./bin/www",
     "start": "node ./bin/www",
+    "empty": "npx sequelize-cli db:migrate:undo:all",
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all",
-    "empty": "npx sequelize-cli db:migrate:undo:all "
+    "reset-db": "npm run empty & npm run migrate & npm run seed"
   },
   "keywords": [
     "backend",
@@ -18,5 +19,14 @@
   ],
   "author": "Omar Melendrez",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.1.0",
+    "parse-error": "^0.2.0",
+    "sequelize": "^5.21.5"
+  }
 }
