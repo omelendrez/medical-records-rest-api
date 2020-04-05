@@ -35,7 +35,7 @@ const getAll = (req, res) => {
   const Status = require("../models").status;
   Pet.belongsTo(Status);
   return Pet
-    .findAll({
+    .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       attributes: [
         'id',
