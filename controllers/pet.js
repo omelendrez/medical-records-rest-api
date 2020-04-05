@@ -32,31 +32,31 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Company = require("../models").company;
   const Status = require("../models").status;
-  Pet.belongsTo(Company);
   Pet.belongsTo(Status);
   return Pet
     .findAll({
-      raw: true,
-      tableHint: TableHints.NOLOCK, attributes: ['id', 'code', 'name', 'address', 'phoneNumber', 'contact',
-        'companyId', [sequelize.col('company.name'), 'company'],
-        'statusId', [sequelize.col('status.name'), 'status'],
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        'id',
+        'name',
+        'type',
+        'breed',
+        'sex',
+        'weight',
+        'yearBorn',
+        'observations'
       ],
       include: [{
-        model: Company,
-        where: {
-          id: sequelize.col('pet.companyId')
-        },
-        attributes: []
-      }, {
         model: Status,
         where: {
           id: sequelize.col('pet.statusId')
         },
-        attributes: []
+        attributes: [
+          'id',
+          'name'
+        ]
       }]
-
     })
     .then(pets => res
       .status(200)
@@ -76,13 +76,13 @@ const deleteRecord = (req, res) => {
       pet.destroy()
         .then(pet => {
           const resp = {
-            message: `Proveedor "${pet.name}" eliminada`,
+            message: `Paciente "${pet.name}" eliminada`,
             pet
           }
           return ReS(res, resp, 200)
         })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el proveedor'))
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
     )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el proveedor'))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
 }
 module.exports.deleteRecord = deleteRecord

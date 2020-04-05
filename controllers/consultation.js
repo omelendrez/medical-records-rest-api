@@ -32,58 +32,18 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Category = require("../models").category;
-  const Unit = require("../models").unit;
-  const Company = require("../models").company;
-  const Status = require("../models").status;
-  Consultation.belongsTo(Category);
-  Consultation.belongsTo(Unit);
-  Consultation.belongsTo(Company);
-  Consultation.belongsTo(Status);
   return Consultation
     .findAll({
-      raw: true,
       tableHint: TableHints.NOLOCK,
       attributes: [
         'id',
-        'code',
-        'name',
-        'minimum',
-        [sequelize.fn('date_format', sequelize.col('lastPurchaseDate'), '%d-%b-%y'), 'lastPurchaseDate'],
-        'lastPurchasePrice',
-        [sequelize.fn('date_format', sequelize.col('lastSaleDate'), '%d-%b-%y'), 'lastSaleDate'],
-        'lastSalePrice',
-        'price',
-        'categoryId', [sequelize.col('category.name'), 'category'],
-        //        'unitId', [sequelize.col('unit.name'), 'unit'],
-        'companyId', [sequelize.col('company.name'), 'company'],
-        'statusId', [sequelize.col('status.name'), 'status']
-      ],
-      include: [{
-        model: Category,
-        where: {
-          id: sequelize.col('consultation.categoryId')
-        },
-        attributes: []
-      }, {
-        model: Unit,
-        where: {
-          id: sequelize.col('consultation.unitId')
-        },
-        attributes: []
-      }, {
-        model: Company,
-        where: {
-          id: sequelize.col('consultation.companyId')
-        },
-        attributes: []
-      }, {
-        model: Status,
-        where: {
-          id: sequelize.col('consultation.statusId')
-        },
-        attributes: []
-      }]
+        'petId',
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        'diagnosis',
+        'treatment',
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        'observations'
+      ]
     })
     .then(consultations => res
       .status(200)
@@ -91,3 +51,25 @@ const getAll = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
+
+const deleteRecord = (req, res) => {
+  return Consultation
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(consultation =>
+      consultation.destroy()
+        .then(consultation => {
+          const resp = {
+            message: `Consulta eliminada`,
+            consultation
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la consulta'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la consulta'))
+}
+module.exports.deleteRecord = deleteRecord
