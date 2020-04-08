@@ -42,9 +42,16 @@ const getAll = (req, res) => {
   const Status = require("../models").status;
   Customer.belongsTo(Status);
 
+  const filter = req.query.filter || ''
+
   return Customer
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
+      where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        }
+      },
       attributes: [
         'id',
         'name',

@@ -32,6 +32,11 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Pet = require("../models").pet;
+  Consultation.belongsTo(Pet);
+
+  const filter = req.query.filter || ''
+
   return Consultation
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
@@ -43,7 +48,17 @@ const getAll = (req, res) => {
         'treatment',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
         'observations'
-      ]
+      ],
+      include: [{
+        model: Pet,
+        where: {
+          id: sequelize.col('consultation.petID'),
+          name: {
+            [Op.like]: `%${filter}%`
+          }
+        },
+        attributes: []
+      }]
     })
     .then(consultations => res
       .status(200)
