@@ -14,7 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: ''
     },
-    statusId: DataTypes.TINYINT
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
+    }
   }, {});
   Customer.associate = function (models) {
     // associations can be defined here

@@ -7,6 +7,7 @@ const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, name, phone } = req.body
+  console.log(req.body)
 
   if (!name || !phone) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
@@ -41,10 +42,19 @@ module.exports.create = create
 const getAll = (req, res) => {
   const Status = require("../models").status;
   Customer.belongsTo(Status);
+  const Pet = require("../models").pet;
+  Customer.hasMany(Pet)
+
+  const filter = req.query.filter || ''
 
   return Customer
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
+      where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        }
+      },
       attributes: [
         'id',
         'name',
@@ -62,7 +72,18 @@ const getAll = (req, res) => {
           'id',
           'name'
         ]
+      }],
+      include: [{
+        model: Pet,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          'name'
+        ],
+        required: false
       }]
+
     })
     .then(customers => res
       .status(200)

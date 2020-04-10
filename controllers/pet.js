@@ -34,9 +34,17 @@ module.exports.create = create
 const getAll = (req, res) => {
   const Status = require("../models").status;
   Pet.belongsTo(Status);
+
+  const filter = req.query.filter || ''
+
   return Pet
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
+      where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        }
+      },
       attributes: [
         'id',
         'customerId',
