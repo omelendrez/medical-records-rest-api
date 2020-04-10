@@ -132,9 +132,9 @@ const getOne = (req, res) => {
       }]
 
     })
-    .then(customers => res
+    .then(customer => res
       .status(200)
-      .json({ success: true, customers }))
+      .json({ success: true, customer }))
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getOne = getOne
