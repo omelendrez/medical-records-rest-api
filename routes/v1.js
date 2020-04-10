@@ -7,6 +7,7 @@ const Consultation = require('../controllers/consultation')
 const Status = require('../controllers/status')
 
 router.get('/api/customers', Customer.getAll)
+router.get('/api/customers/:id', Customer.getOne)
 router.post('/api/customers', Customer.create)
 router.delete('/api/customers/:id', Customer.deleteRecord)
 

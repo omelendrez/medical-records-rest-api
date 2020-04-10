@@ -92,6 +92,53 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
+const getOne = (req, res) => {
+  const Status = require("../models").status;
+  Customer.belongsTo(Status);
+  const Pet = require("../models").pet;
+  Customer.hasMany(Pet)
+  return Customer
+    .findOne({
+      where: {
+        id: req.params.id
+      },
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations'
+      ],
+      include: [{
+        model: Status,
+        where: {
+          id: sequelize.col('customer.statusId')
+        },
+        attributes: [
+          'id',
+          'name'
+        ]
+      }],
+      include: [{
+        model: Pet,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          'name'
+        ],
+        required: false
+      }]
+
+    })
+    .then(customers => res
+      .status(200)
+      .json({ success: true, customers }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getOne = getOne
+
 const deleteRecord = (req, res) => {
   return Customer
     .findOne({
