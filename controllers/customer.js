@@ -7,19 +7,17 @@ const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, name, phone } = req.body
-  console.log(req.body)
 
   if (!name || !phone) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
-  let found
-
-  found = await Customer.findOne({ where: { name } })
-  if (found) {
-    return ReE(res, { success: false, message: 'Ese nombre de cliente ya existe en la base de datos' }, 422)
+  if (!id) {
+    const found = await Customer.findOne({ where: { name } })
+    if (found) {
+      return ReE(res, { success: false, message: 'Ese nombre de cliente ya existe en la base de datos' }, 422)
+    }
   }
-
   await updateOrCreate(Customer,
     {
       id: {
@@ -108,29 +106,9 @@ const getOne = (req, res) => {
         'address',
         'phone',
         'email',
-        'observations'
-      ],
-      include: [{
-        model: Status,
-        where: {
-          id: sequelize.col('customer.statusId')
-        },
-        attributes: [
-          'id',
-          'name'
-        ]
-      }],
-      include: [{
-        model: Pet,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
-        attributes: [
-          'name'
-        ],
-        required: false
-      }]
-
+        'observations',
+        'statusId'
+      ]
     })
     .then(customer => res
       .status(200)
