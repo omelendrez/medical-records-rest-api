@@ -91,6 +91,8 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getById = (req, res) => {
+  const Pet = require("../models").pet;
+  Customer.hasMany(Pet)
 
   return Customer
     .findOne({
@@ -106,7 +108,17 @@ const getById = (req, res) => {
         'email',
         'observations',
         'statusId'
-      ]
+      ],
+      include: [{
+        model: Pet,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          'name'
+        ],
+        required: false
+      }]
     })
     .then(customer => res
       .status(200)
