@@ -91,12 +91,10 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getById = (req, res) => {
-  const Status = require("../models").status;
-  Customer.belongsTo(Status);
-  const Pet = require("../models").pet;
-  Customer.hasMany(Pet)
+
   return Customer
     .findOne({
+      tableHint: TableHints.NOLOCK,
       where: {
         id: req.params.id
       },

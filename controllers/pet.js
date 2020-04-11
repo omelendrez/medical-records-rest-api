@@ -74,6 +74,34 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
+const getById = (req, res) => {
+
+  return Pet
+    .findOne({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        id: req.params.id
+      },
+      attributes: [
+        'id',
+        'customerId',
+        'name',
+        'type',
+        'breed',
+        'sex',
+        'weight',
+        'yearBorn',
+        'observations',
+        'statusId'
+      ]
+    })
+    .then(pet => res
+      .status(200)
+      .json({ success: true, pet }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getById = getById
+
 const deleteRecord = (req, res) => {
   return Pet
     .findOne({
