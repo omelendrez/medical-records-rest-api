@@ -90,7 +90,7 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
-const getOne = (req, res) => {
+const getById = (req, res) => {
   const Status = require("../models").status;
   Customer.belongsTo(Status);
   const Pet = require("../models").pet;
@@ -115,7 +115,7 @@ const getOne = (req, res) => {
       .json({ success: true, customer }))
     .catch(err => ReE(res, err, 422))
 }
-module.exports.getOne = getOne
+module.exports.getById = getById
 
 const deleteRecord = (req, res) => {
   return Customer
