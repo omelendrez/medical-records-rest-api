@@ -7,19 +7,17 @@ const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, name, phone } = req.body
-  console.log(req.body)
 
   if (!name || !phone) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
-  let found
-
-  found = await Customer.findOne({ where: { name } })
-  if (found) {
-    return ReE(res, { success: false, message: 'Ese nombre de cliente ya existe en la base de datos' }, 422)
+  if (!id) {
+    const found = await Customer.findOne({ where: { name } })
+    if (found) {
+      return ReE(res, { success: false, message: 'Ese nombre de cliente ya existe en la base de datos' }, 422)
+    }
   }
-
   await updateOrCreate(Customer,
     {
       id: {
@@ -91,6 +89,31 @@ const getAll = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
+
+const getById = (req, res) => {
+
+  return Customer
+    .findOne({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        id: req.params.id
+      },
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations',
+        'statusId'
+      ]
+    })
+    .then(customer => res
+      .status(200)
+      .json({ success: true, customer }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getById = getById
 
 const deleteRecord = (req, res) => {
   return Customer

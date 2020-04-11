@@ -7,10 +7,12 @@ const Consultation = require('../controllers/consultation')
 const Status = require('../controllers/status')
 
 router.get('/api/customers', Customer.getAll)
+router.get('/api/customers/:id', Customer.getById)
 router.post('/api/customers', Customer.create)
 router.delete('/api/customers/:id', Customer.deleteRecord)
 
 router.get('/api/pets', Pet.getAll)
+router.get('/api/pets/:id', Pet.getById)
 router.post('/api/pets', Pet.create)
 router.delete('/api/pets/:id', Pet.deleteRecord)
 
