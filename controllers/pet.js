@@ -75,7 +75,8 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getById = (req, res) => {
-
+  const Consultation = require('../models').consultation
+  Pet.hasMany(Consultation)
   return Pet
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -93,7 +94,22 @@ const getById = (req, res) => {
         'yearBorn',
         'observations',
         'statusId'
-      ]
+      ],
+      include: [{
+        model: Consultation,
+        where: {
+          petId: sequelize.col('pet.id')
+        },
+        attributes: [
+          'id',
+          'petId',
+          [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+          'diagnosis',
+          'treatment',
+          [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+          'observations'
+        ]
+      }]
     })
     .then(pet => res
       .status(200)
