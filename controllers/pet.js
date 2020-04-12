@@ -108,7 +108,8 @@ const getById = (req, res) => {
           'treatment',
           [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
           'observations'
-        ]
+        ],
+        required: false
       }]
     })
     .then(pet => res
