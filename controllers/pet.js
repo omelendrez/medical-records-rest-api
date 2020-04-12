@@ -6,9 +6,9 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id, name, type, breed, sex, yearBorn } = req.body
+  const { id, name, type, breed, sex, yearBorn, customerId } = req.body
 
-  if (!name || !type || !breed || !sex || !yearBorn) {
+  if (!name || !type || !breed || !sex || !yearBorn || !customerId) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
