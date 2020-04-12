@@ -67,6 +67,30 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
+const getById = (req, res) => {
+  return Consultation
+    .findOne({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        id: req.params.id
+      },
+      attributes: [
+        'id',
+        'petId',
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        'diagnosis',
+        'treatment',
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        'observations'
+      ]
+    })
+    .then(consultation => res
+      .status(200)
+      .json({ success: true, consultation }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getById = getById
+
 const deleteRecord = (req, res) => {
   return Consultation
     .findOne({
@@ -75,7 +99,8 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.destroy()
+      //consultation.destroy()
+      consultation.update({ statusId: 0 })
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,
