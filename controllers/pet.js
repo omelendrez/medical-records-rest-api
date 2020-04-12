@@ -110,7 +110,8 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(pet =>
-      pet.destroy()
+      //pet.destroy()
+      pet.update({ statusId: 0 })
         .then(pet => {
           const resp = {
             message: `Paciente "${pet.name}" eliminada`,

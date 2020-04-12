@@ -51,7 +51,8 @@ const getAll = (req, res) => {
       where: {
         name: {
           [Op.like]: `%${filter}%`
-        }
+        },
+        statusId: 1
       },
       attributes: [
         'id',
@@ -115,7 +116,7 @@ const getById = (req, res) => {
           customerId: sequelize.col('customer.id')
         },
         attributes: [
-          'name'
+          'id', 'name'
         ],
         required: false
       }]
@@ -135,7 +136,8 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(customer =>
-      customer.destroy()
+      //      customer.destroy()
+      customer.update({ statusId: 0 })
         .then(customer => {
           const resp = {
             message: `Cliente "${customer.name}" eliminado`,

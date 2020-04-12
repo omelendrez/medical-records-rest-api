@@ -75,7 +75,8 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.destroy()
+      //consultation.destroy()
+      consultation.update({ statusId: 0 })
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,
