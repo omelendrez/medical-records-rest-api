@@ -17,6 +17,7 @@ router.post('/api/pets', Pet.create)
 router.delete('/api/pets/:id', Pet.deleteRecord)
 
 router.get('/api/consultations', Consultation.getAll)
+router.get('/api/consultations/:id', Consultation.getById)
 router.post('/api/consultations', Consultation.create)
 router.delete('/api/consultations/:id', Consultation.deleteRecord)
 
