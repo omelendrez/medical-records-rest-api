@@ -84,9 +84,9 @@ const getById = (req, res) => {
         'observations'
       ]
     })
-    .then(consultations => res
+    .then(consultation => res
       .status(200)
-      .json({ success: true, consultations }))
+      .json({ success: true, consultation }))
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getById = getById
