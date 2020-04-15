@@ -4,13 +4,13 @@ module.exports = (sequelize, DataTypes) => {
     petID: DataTypes.INTEGER,
     date: DataTypes.DATE,
     diagnosis: DataTypes.STRING,
-    treatment: DataTypes.STRING,
+    treatment: DataTypes.STRING(5000),
     nextConsultation: {
       type: DataTypes.DATE,
       defaultValue: null
     },
     observations: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       defaultValue: null
     }
   }, {});

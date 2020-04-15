@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: ''
     },
     observations: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       defaultValue: ''
     },
     statusId: {
