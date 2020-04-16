@@ -100,6 +100,9 @@ const getById = (req, res) => {
         where: {
           petId: sequelize.col('pet.id')
         },
+        order: [
+          ['id', 'DESC']
+        ],
         attributes: [
           'id',
           'petId',
@@ -109,7 +112,7 @@ const getById = (req, res) => {
           [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
           'observations'
         ],
-        required: false
+        required: false,
       }]
     })
     .then(pet => res

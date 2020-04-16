@@ -49,6 +49,9 @@ const getAll = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
         'observations'
       ],
+      order: [
+        ['id', 'DESC']
+      ],
       include: [{
         model: Pet,
         where: {
@@ -77,10 +80,10 @@ const getById = (req, res) => {
       attributes: [
         'id',
         'petId',
-        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
         'treatment',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
         'observations'
       ]
     })
@@ -99,8 +102,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      //consultation.destroy()
-      consultation.update({ statusId: 0 })
+      consultation.destroy()
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,
