@@ -12,6 +12,10 @@ const create = async (req, res) => {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
+  if(!req.body.nextConsultation) {
+    delete req.body.nextConsultation
+  }
+
   await updateOrCreate(Consultation,
     {
       id: {
@@ -40,6 +44,12 @@ const getAll = (req, res) => {
   return Consultation
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
+      where: {
+        [Op.or]: [
+          { diagnosis: { [Op.like]: `%${filter}%` } },
+          { treatment: { [Op.like]: `%${filter}%` } }
+        ]
+      },
       attributes: [
         'id',
         'petId',
@@ -50,17 +60,14 @@ const getAll = (req, res) => {
         'observations'
       ],
       order: [
-        ['id', 'DESC']
+        ['date', 'DESC']
       ],
       include: [{
         model: Pet,
         where: {
           id: sequelize.col('consultation.petID'),
-          name: {
-            [Op.like]: `%${filter}%`
-          }
         },
-        attributes: []
+        attributes: ['name']
       }]
     })
     .then(consultations => res

@@ -95,14 +95,14 @@ const getById = (req, res) => {
         'observations',
         'statusId'
       ],
+      order: [
+        [Consultation, sequelize.col('date'), 'DESC']
+      ],
       include: [{
         model: Consultation,
         where: {
           petId: sequelize.col('pet.id')
         },
-        order: [
-          ['id', 'DESC']
-        ],
         attributes: [
           'id',
           'petId',
