@@ -12,6 +12,10 @@ const create = async (req, res) => {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
+  if(!req.body.nextConsultation) {
+    delete req.body.nextConsultation
+  }
+
   await updateOrCreate(Consultation,
     {
       id: {
@@ -40,6 +44,12 @@ const getAll = (req, res) => {
   return Consultation
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
+      where: {
+        [Op.or]: [
+          { diagnosis: { [Op.like]: `%${filter}%` } },
+          { treatment: { [Op.like]: `%${filter}%` } }
+        ]
+      },
       attributes: [
         'id',
         'petId',
@@ -49,15 +59,15 @@ const getAll = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
         'observations'
       ],
+      order: [
+        ['date', 'DESC']
+      ],
       include: [{
         model: Pet,
         where: {
           id: sequelize.col('consultation.petID'),
-          name: {
-            [Op.like]: `%${filter}%`
-          }
         },
-        attributes: []
+        attributes: ['name']
       }]
     })
     .then(consultations => res
@@ -68,6 +78,9 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getById = (req, res) => {
+  const Pet = require('../models').pet
+  Consultation.belongsTo(Pet)
+
   return Consultation
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -77,12 +90,19 @@ const getById = (req, res) => {
       attributes: [
         'id',
         'petId',
-        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
         'treatment',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
         'observations'
-      ]
+      ],
+      include: [{
+        model: Pet,
+        where : {
+          id: sequelize.col('consultation.petID')
+        },
+        attributes: ['customerId']
+      }]
     })
     .then(consultation => res
       .status(200)
@@ -99,8 +119,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      //consultation.destroy()
-      consultation.update({ statusId: 0 })
+      consultation.destroy()
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,

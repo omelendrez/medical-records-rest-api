@@ -18,13 +18,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       treatment: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(5000)
       },
       nextConsultation: {
         type: Sequelize.DATE
       },
       observations: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(5000)
       },
       createdAt: {
         allowNull: false,

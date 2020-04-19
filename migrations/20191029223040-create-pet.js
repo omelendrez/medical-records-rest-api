@@ -31,7 +31,7 @@ module.exports = {
         defaultValue: ''
       },
       observations: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(5000),
         defaultValue: ''
       },
       statusId: {

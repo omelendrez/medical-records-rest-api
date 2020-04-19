@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
     email: DataTypes.STRING,
     observations: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5000),
       defaultValue: ''
     },
     statusId: {

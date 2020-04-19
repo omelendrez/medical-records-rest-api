@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       observations: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(5000)
       },
       statusId: {
         type: Sequelize.INTEGER

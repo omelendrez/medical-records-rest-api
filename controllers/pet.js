@@ -95,6 +95,9 @@ const getById = (req, res) => {
         'observations',
         'statusId'
       ],
+      order: [
+        [Consultation, sequelize.col('date'), 'DESC']
+      ],
       include: [{
         model: Consultation,
         where: {
@@ -109,7 +112,7 @@ const getById = (req, res) => {
           [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
           'observations'
         ],
-        required: false
+        required: false,
       }]
     })
     .then(pet => res
