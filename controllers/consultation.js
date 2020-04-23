@@ -179,7 +179,7 @@ const restoreRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.update({ statusId: 2 })
+      consultation.update({ statusId: 1 })
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,
