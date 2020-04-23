@@ -160,7 +160,7 @@ const deleteRecord = (req, res) => {
       consultation.update({ statusId: 2 })
         .then(consultation => {
           const resp = {
-            message: `Consulta restaurada`,
+            message: `Consulta eliminada`,
             consultation
           }
           return ReS(res, resp, 200)
@@ -182,7 +182,7 @@ const restoreRecord = (req, res) => {
       consultation.update({ statusId: 1 })
         .then(consultation => {
           const resp = {
-            message: `Consulta eliminada`,
+            message: `Consulta restaurada`,
             consultation
           }
           return ReS(res, resp, 200)
