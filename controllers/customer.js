@@ -199,3 +199,26 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar el cliente'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const restoreRecord = (req, res) => {
+  return Customer
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(customer =>
+      //      customer.destroy()
+      customer.update({ statusId: 1 })
+        .then(customer => {
+          const resp = {
+            message: `Cliente "${customer.name}" restaurado`,
+            customer
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar el cliente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar el cliente'))
+}
+module.exports.restoreRecord = restoreRecord

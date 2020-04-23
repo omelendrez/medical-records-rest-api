@@ -157,10 +157,10 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.update({ statusId: 2 })
+      consultation.update({ statusId: 1 })
         .then(consultation => {
           const resp = {
-            message: `Consulta eliminada`,
+            message: `Consulta restaurada`,
             consultation
           }
           return ReS(res, resp, 200)
@@ -170,3 +170,25 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar la consulta'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const restoreRecord = (req, res) => {
+  return Consultation
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(consultation =>
+      consultation.update({ statusId: 2 })
+        .then(consultation => {
+          const resp = {
+            message: `Consulta eliminada`,
+            consultation
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar la consulta'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar la consulta'))
+}
+module.exports.restoreRecord = restoreRecord

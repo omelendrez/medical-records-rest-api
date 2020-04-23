@@ -174,7 +174,7 @@ const deleteRecord = (req, res) => {
       pet.update({ statusId: 2 })
         .then(pet => {
           const resp = {
-            message: `Paciente "${pet.name}" eliminada`,
+            message: `Paciente "${pet.name}" eliminado`,
             pet
           }
           return ReS(res, resp, 200)
@@ -184,3 +184,26 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const restoreRecord = (req, res) => {
+  return Pet
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(pet =>
+      //pet.destroy()
+      pet.update({ statusId: 1 })
+        .then(pet => {
+          const resp = {
+            message: `Paciente "${pet.name}" restaurado`,
+            pet
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar el paciente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar el paciente'))
+}
+module.exports.restoreRecord = restoreRecord
