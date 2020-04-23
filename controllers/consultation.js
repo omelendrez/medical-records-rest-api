@@ -157,7 +157,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.update({ statusId: 1 })
+      consultation.update({ statusId: 2 })
         .then(consultation => {
           const resp = {
             message: `Consulta restaurada`,
