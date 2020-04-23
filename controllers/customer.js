@@ -91,6 +91,55 @@ const getAll = (req, res) => {
 }
 module.exports.getAll = getAll
 
+const getInactive = (req, res) => {
+  const Status = require("../models").status;
+  Customer.belongsTo(Status);
+  const Pet = require("../models").pet;
+  Customer.hasMany(Pet)
+
+  return Customer
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        statusId: 2
+      },
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations'
+      ],
+      include: [{
+        model: Status,
+        where: {
+          id: sequelize.col('customer.statusId')
+        },
+        attributes: [
+          'id',
+          'name'
+        ]
+      }],
+      include: [{
+        model: Pet,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          'name'
+        ],
+        required: false
+      }]
+
+    })
+    .then(customers => res
+      .status(200)
+      .json({ success: true, customers }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getInactive = getInactive
+
 const getById = (req, res) => {
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
@@ -137,7 +186,7 @@ const deleteRecord = (req, res) => {
     })
     .then(customer =>
       //      customer.destroy()
-      customer.update({ statusId: 0 })
+      customer.update({ statusId: 2 })
         .then(customer => {
           const resp = {
             message: `Cliente "${customer.name}" eliminado`,

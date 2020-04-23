@@ -43,7 +43,8 @@ const getAll = (req, res) => {
       where: {
         name: {
           [Op.like]: `%${filter}%`
-        }
+        },
+        statusId: 1
       },
       attributes: [
         'id',
@@ -73,6 +74,45 @@ const getAll = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
+
+const getInactive = (req, res) => {
+  const Status = require("../models").status;
+  Pet.belongsTo(Status);
+
+  return Pet
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        statusId: 2
+      },
+      attributes: [
+        'id',
+        'customerId',
+        'name',
+        'type',
+        'breed',
+        'sex',
+        'weight',
+        'yearBorn',
+        'observations'
+      ],
+      include: [{
+        model: Status,
+        where: {
+          id: sequelize.col('pet.statusId')
+        },
+        attributes: [
+          'id',
+          'name'
+        ]
+      }]
+    })
+    .then(pets => res
+      .status(200)
+      .json({ success: true, pets }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
   const Consultation = require('../models').consultation
@@ -131,7 +171,7 @@ const deleteRecord = (req, res) => {
     })
     .then(pet =>
       //pet.destroy()
-      pet.update({ statusId: 0 })
+      pet.update({ statusId: 2 })
         .then(pet => {
           const resp = {
             message: `Paciente "${pet.name}" eliminada`,
