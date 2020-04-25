@@ -36,6 +36,10 @@ const getAll = (req, res) => {
   Pet.belongsTo(Status);
 
   const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
 
   return Pet
     .findAndCountAll({
@@ -46,6 +50,9 @@ const getAll = (req, res) => {
         },
         statusId: 1
       },
+      distinct: true,
+      offset,
+      limit,
       attributes: [
         'id',
         'customerId',
@@ -79,12 +86,25 @@ const getInactive = (req, res) => {
   const Status = require("../models").status;
   Pet.belongsTo(Status);
 
+  const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
   return Pet
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        },
         statusId: 2
       },
+      distinct: true,
+      offset,
+      limit,
+      order: [['updatedAt', 'DESC']],
       attributes: [
         'id',
         'customerId',

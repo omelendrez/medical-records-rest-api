@@ -38,12 +38,14 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Status = require("../models").status;
-  Customer.belongsTo(Status);
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
 
   const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
 
   return Customer
     .findAndCountAll({
@@ -54,6 +56,9 @@ const getAll = (req, res) => {
         },
         statusId: 1
       },
+      distinct: true,
+      offset,
+      limit,
       attributes: [
         'id',
         'name',
@@ -62,16 +67,6 @@ const getAll = (req, res) => {
         'email',
         'observations'
       ],
-      include: [{
-        model: Status,
-        where: {
-          id: sequelize.col('customer.statusId')
-        },
-        attributes: [
-          'id',
-          'name'
-        ]
-      }],
       include: [{
         model: Pet,
         where: {
@@ -82,7 +77,6 @@ const getAll = (req, res) => {
         ],
         required: false
       }]
-
     })
     .then(customers => res
       .status(200)
@@ -97,19 +91,33 @@ const getInactive = (req, res) => {
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
 
+  const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
   return Customer
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        },
         statusId: 2
       },
+      distinct: true,
+      offset,
+      limit,
+      order: [['updatedAt', 'DESC']],
       attributes: [
         'id',
         'name',
         'address',
         'phone',
         'email',
-        'observations'
+        'observations',
+        'updatedAt'
       ],
       include: [{
         model: Status,

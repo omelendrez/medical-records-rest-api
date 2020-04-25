@@ -40,6 +40,10 @@ const getAll = (req, res) => {
   Consultation.belongsTo(Pet);
 
   const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
 
   return Consultation
     .findAndCountAll({
@@ -51,6 +55,9 @@ const getAll = (req, res) => {
         ],
         statusId: 1
       },
+      distinct: true,
+      offset,
+      limit,
       attributes: [
         'id',
         'petId',
@@ -82,12 +89,26 @@ const getInactive = (req, res) => {
   const Pet = require("../models").pet;
   Consultation.belongsTo(Pet);
 
+  const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
   return Consultation
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
+        [Op.or]: [
+          { diagnosis: { [Op.like]: `%${filter}%` } },
+          { treatment: { [Op.like]: `%${filter}%` } }
+        ],
         statusId: 2
       },
+      distinct: true,
+      offset,
+      limit,
+      order: [['updatedAt', 'DESC']],
       attributes: [
         'id',
         'petId',
