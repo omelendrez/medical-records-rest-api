@@ -1,7 +1,7 @@
 ### Lista clientes
 GET http://localhost:3000/api/customers/inactive?filter=&page=&limit=500
 
-###
+### Agregar registro
 POST http://localhost:3000/api/customers
 content-type: application/json
 
