@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     observations: {
       type: DataTypes.STRING(5000),
       defaultValue: null
+    },
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
     }
   }, {});
   Consultation.associate = function (models) {

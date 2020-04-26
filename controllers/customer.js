@@ -38,12 +38,14 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Status = require("../models").status;
-  Customer.belongsTo(Status);
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
 
   const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
 
   return Customer
     .findAndCountAll({
@@ -54,6 +56,9 @@ const getAll = (req, res) => {
         },
         statusId: 1
       },
+      distinct: true,
+      offset,
+      limit,
       attributes: [
         'id',
         'name',
@@ -61,6 +66,58 @@ const getAll = (req, res) => {
         'phone',
         'email',
         'observations'
+      ],
+      include: [{
+        model: Pet,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          'name'
+        ],
+        required: false
+      }]
+    })
+    .then(customers => res
+      .status(200)
+      .json({ success: true, customers }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getAll = getAll
+
+const getInactive = (req, res) => {
+  const Status = require("../models").status;
+  Customer.belongsTo(Status);
+  const Pet = require("../models").pet;
+  Customer.hasMany(Pet)
+
+  const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
+  return Customer
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        },
+        statusId: 2
+      },
+      distinct: true,
+      offset,
+      limit,
+      order: [['updatedAt', 'DESC']],
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations',
+        'updatedAt'
       ],
       include: [{
         model: Status,
@@ -89,7 +146,7 @@ const getAll = (req, res) => {
       .json({ success: true, customers }))
     .catch(err => ReE(res, err, 422))
 }
-module.exports.getAll = getAll
+module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
   const Pet = require("../models").pet;
@@ -137,7 +194,7 @@ const deleteRecord = (req, res) => {
     })
     .then(customer =>
       //      customer.destroy()
-      customer.update({ statusId: 0 })
+      customer.update({ statusId: 2 })
         .then(customer => {
           const resp = {
             message: `Cliente "${customer.name}" eliminado`,
@@ -150,3 +207,26 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar el cliente'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const restoreRecord = (req, res) => {
+  return Customer
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(customer =>
+      //      customer.destroy()
+      customer.update({ statusId: 1 })
+        .then(customer => {
+          const resp = {
+            message: `Cliente "${customer.name}" restaurado`,
+            customer
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar el cliente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar el cliente'))
+}
+module.exports.restoreRecord = restoreRecord

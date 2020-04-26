@@ -26,6 +26,10 @@ module.exports = {
       observations: {
         type: Sequelize.STRING(5000)
       },
+      statusId: {
+        type: Sequelize.TINYINT,
+        defaultValue: 1
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

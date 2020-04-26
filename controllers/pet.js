@@ -36,6 +36,10 @@ const getAll = (req, res) => {
   Pet.belongsTo(Status);
 
   const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
 
   return Pet
     .findAndCountAll({
@@ -43,8 +47,12 @@ const getAll = (req, res) => {
       where: {
         name: {
           [Op.like]: `%${filter}%`
-        }
+        },
+        statusId: 1
       },
+      distinct: true,
+      offset,
+      limit,
       attributes: [
         'id',
         'customerId',
@@ -73,6 +81,58 @@ const getAll = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
+
+const getInactive = (req, res) => {
+  const Status = require("../models").status;
+  Pet.belongsTo(Status);
+
+  const filter = req.query.filter || ''
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
+  return Pet
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        name: {
+          [Op.like]: `%${filter}%`
+        },
+        statusId: 2
+      },
+      distinct: true,
+      offset,
+      limit,
+      order: [['updatedAt', 'DESC']],
+      attributes: [
+        'id',
+        'customerId',
+        'name',
+        'type',
+        'breed',
+        'sex',
+        'weight',
+        'yearBorn',
+        'observations'
+      ],
+      include: [{
+        model: Status,
+        where: {
+          id: sequelize.col('pet.statusId')
+        },
+        attributes: [
+          'id',
+          'name'
+        ]
+      }]
+    })
+    .then(pets => res
+      .status(200)
+      .json({ success: true, pets }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
   const Consultation = require('../models').consultation
@@ -131,10 +191,10 @@ const deleteRecord = (req, res) => {
     })
     .then(pet =>
       //pet.destroy()
-      pet.update({ statusId: 0 })
+      pet.update({ statusId: 2 })
         .then(pet => {
           const resp = {
-            message: `Paciente "${pet.name}" eliminada`,
+            message: `Paciente "${pet.name}" eliminado`,
             pet
           }
           return ReS(res, resp, 200)
@@ -144,3 +204,26 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const restoreRecord = (req, res) => {
+  return Pet
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(pet =>
+      //pet.destroy()
+      pet.update({ statusId: 1 })
+        .then(pet => {
+          const resp = {
+            message: `Paciente "${pet.name}" restaurado`,
+            pet
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar el paciente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar el paciente'))
+}
+module.exports.restoreRecord = restoreRecord
