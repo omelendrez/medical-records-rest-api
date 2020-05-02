@@ -18,10 +18,9 @@
     "timezone": "-03:00"
   },
   "production": {
-    "username": "vmr_user",
-    "password": "M1a4$1t4E8r0",
-    "database": "vmr",
-    "host": "127.0.0.1",
+    "username": "b30107142c3e47",
+    "password": "83a437e5",
+    "database": "heroku_b3627cd1b200890",
     "dialect": "mysql",
     "logging": false,
     "timezone": "-03:00"
