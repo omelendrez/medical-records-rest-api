@@ -14,13 +14,9 @@ module.exports.updateOrCreate = (model, where, newItem, beforeCreate) => {
             .then(item => resolve(item.data()))
             .catch(err => reject(err))
         }
-        return model
-          .findOne({ where })
-          .then(item => {
-            item.update(newItem, { where: where })
-              .then(item => resolve(item.data()))
-              .catch(err => reject(err))
-          })
+        return item.update(newItem, { where: where })
+          .then(item => resolve(item.data()))
+          .catch(err => reject(err))
       })
   })
 }
