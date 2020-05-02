@@ -36,8 +36,11 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Pet = require("../models").pet;
+  const Pet = require("../models").pet
   Consultation.belongsTo(Pet);
+
+  const Customer = require("../models").customer
+  Pet.belongsTo(Customer)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -75,8 +78,16 @@ const getAll = (req, res) => {
         where: {
           id: sequelize.col('consultation.petID'),
         },
-        attributes: ['name']
-      }]
+        attributes: ['name'],
+        include: [{
+          model: Customer,
+          where: {
+            petId: sequelize.col('pet.id')
+          },
+
+        }]
+
+      }],
     })
     .then(consultations => res
       .status(200)
