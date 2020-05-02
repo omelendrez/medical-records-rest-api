@@ -26,7 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Sexo es un campo obligatorio' }
       }
     },
-    weight: DataTypes.STRING,
+    weight: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     yearBorn: {
       type: DataTypes.STRING,
       defaultValue: ''

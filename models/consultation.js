@@ -7,11 +7,23 @@ module.exports = (sequelize, DataTypes) => {
     treatment: DataTypes.STRING(5000),
     nextConsultation: {
       type: DataTypes.DATE,
-      defaultValue: null
+      defaultValue: ''
     },
     observations: {
       type: DataTypes.STRING(5000),
-      defaultValue: null
+      defaultValue: ''
+    },
+    amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0
+    },
+    paymentMethod: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
+    paid: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0
     },
     statusId: {
       type: DataTypes.TINYINT,

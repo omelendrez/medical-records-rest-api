@@ -7,9 +7,18 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Nombre de cliente es un campo obligatorio' }
       }
     },
-    address: DataTypes.STRING,
-    phone: DataTypes.STRING,
-    email: DataTypes.STRING,
+    address: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
+    phone: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
+    email: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     observations: {
       type: DataTypes.STRING(5000),
       defaultValue: ''
