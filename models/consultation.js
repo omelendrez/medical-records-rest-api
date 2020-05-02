@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     treatment: DataTypes.STRING(5000),
     nextConsultation: {
       type: DataTypes.DATE,
-      defaultValue: ''
+      defaultValue: null
     },
     observations: {
       type: DataTypes.STRING(5000),
