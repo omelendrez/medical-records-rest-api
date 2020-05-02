@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, name, phone } = req.body
@@ -54,7 +54,7 @@ const getAll = (req, res) => {
         name: {
           [Op.like]: `%${filter}%`
         },
-        statusId: 1
+        statusId: ACTIVE
       },
       distinct: true,
       offset,
@@ -86,8 +86,6 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
-  const Status = require("../models").status;
-  Customer.belongsTo(Status);
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
 
@@ -104,7 +102,7 @@ const getInactive = (req, res) => {
         name: {
           [Op.like]: `%${filter}%`
         },
-        statusId: 2
+        statusId: INACTIVE
       },
       distinct: true,
       offset,
@@ -119,16 +117,6 @@ const getInactive = (req, res) => {
         'observations',
         'updatedAt'
       ],
-      include: [{
-        model: Status,
-        where: {
-          id: sequelize.col('customer.statusId')
-        },
-        attributes: [
-          'id',
-          'name'
-        ]
-      }],
       include: [{
         model: Pet,
         where: {
@@ -173,7 +161,7 @@ const getById = (req, res) => {
           customerId: sequelize.col('customer.id')
         },
         attributes: [
-          'id', 'name'
+          'id', 'name', 'statusId'
         ],
         required: false
       }]
@@ -194,7 +182,7 @@ const deleteRecord = (req, res) => {
     })
     .then(customer =>
       //      customer.destroy()
-      customer.update({ statusId: 2 })
+      customer.update({ statusId: INACTIVE })
         .then(customer => {
           const resp = {
             message: `Cliente "${customer.name}" eliminado`,
@@ -217,7 +205,7 @@ const restoreRecord = (req, res) => {
     })
     .then(customer =>
       //      customer.destroy()
-      customer.update({ statusId: 1 })
+      customer.update({ statusId: ACTIVE })
         .then(customer => {
           const resp = {
             message: `Cliente "${customer.name}" restaurado`,

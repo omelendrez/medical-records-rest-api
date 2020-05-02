@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, date, diagnosis, treatment } = req.body
@@ -56,7 +56,7 @@ const getAll = (req, res) => {
           { diagnosis: { [Op.like]: `%${filter}%` } },
           { treatment: { [Op.like]: `%${filter}%` } }
         ],
-        statusId: 1
+        statusId: ACTIVE
       },
       distinct: true,
       offset,
@@ -114,7 +114,7 @@ const getInactive = (req, res) => {
           { diagnosis: { [Op.like]: `%${filter}%` } },
           { treatment: { [Op.like]: `%${filter}%` } }
         ],
-        statusId: 2
+        statusId: INACTIVE
       },
       distinct: true,
       offset,
@@ -189,7 +189,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.update({ statusId: 2 })
+      consultation.update({ statusId: INACTIVE })
         .then(consultation => {
           const resp = {
             message: `Consulta eliminada`,
@@ -211,7 +211,7 @@ const restoreRecord = (req, res) => {
       }
     })
     .then(consultation =>
-      consultation.update({ statusId: 1 })
+      consultation.update({ statusId: ACTIVE })
         .then(consultation => {
           const resp = {
             message: `Consulta restaurada`,

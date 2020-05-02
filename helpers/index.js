@@ -56,3 +56,6 @@ module.exports.verifyDelete = (models, where) => {
       })
   })
 }
+
+module.exports.ACTIVE = 1
+module.exports.INACTIVE = 11

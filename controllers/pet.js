@@ -3,7 +3,7 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
   const { id, name, type, breed, sex, yearBorn, customerId } = req.body
@@ -32,9 +32,6 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Status = require("../models").status;
-  Pet.belongsTo(Status);
-
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -48,9 +45,8 @@ const getAll = (req, res) => {
         name: {
           [Op.like]: `%${filter}%`
         },
-        statusId: 1
+        statusId: ACTIVE
       },
-      distinct: true,
       offset,
       limit,
       attributes: [
@@ -63,17 +59,7 @@ const getAll = (req, res) => {
         'weight',
         'yearBorn',
         'observations'
-      ],
-      include: [{
-        model: Status,
-        where: {
-          id: sequelize.col('pet.statusId')
-        },
-        attributes: [
-          'id',
-          'name'
-        ]
-      }]
+      ]
     })
     .then(pets => res
       .status(200)
@@ -83,9 +69,6 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
-  const Status = require("../models").status;
-  Pet.belongsTo(Status);
-
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -99,9 +82,8 @@ const getInactive = (req, res) => {
         name: {
           [Op.like]: `%${filter}%`
         },
-        statusId: 2
+        statusId: INACTIVE
       },
-      distinct: true,
       offset,
       limit,
       order: [['updatedAt', 'DESC']],
@@ -115,17 +97,7 @@ const getInactive = (req, res) => {
         'weight',
         'yearBorn',
         'observations'
-      ],
-      include: [{
-        model: Status,
-        where: {
-          id: sequelize.col('pet.statusId')
-        },
-        attributes: [
-          'id',
-          'name'
-        ]
-      }]
+      ]
     })
     .then(pets => res
       .status(200)
@@ -191,7 +163,7 @@ const deleteRecord = (req, res) => {
     })
     .then(pet =>
       //pet.destroy()
-      pet.update({ statusId: 2 })
+      pet.update({ statusId: INACTIVE })
         .then(pet => {
           const resp = {
             message: `Paciente "${pet.name}" eliminado`,
@@ -214,7 +186,7 @@ const restoreRecord = (req, res) => {
     })
     .then(pet =>
       //pet.destroy()
-      pet.update({ statusId: 1 })
+      pet.update({ statusId: ACTIVE })
         .then(pet => {
           const resp = {
             message: `Paciente "${pet.name}" restaurado`,
