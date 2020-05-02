@@ -127,7 +127,10 @@ const getInactive = (req, res) => {
         'diagnosis',
         'treatment',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-        'observations'
+        'observations',
+        'amount',
+        'paymentMethod',
+        'paid'
       ],
       order: [
         ['date', 'DESC']
@@ -164,7 +167,10 @@ const getById = (req, res) => {
         'diagnosis',
         'treatment',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
-        'observations'
+        'observations',
+        'amount',
+        'paymentMethod',
+        'paid'
       ],
       include: [{
         model: Pet,
