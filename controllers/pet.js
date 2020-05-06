@@ -8,7 +8,7 @@ const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 const create = async (req, res) => {
   const { id, name, type, breed, sex, yearBorn, customerId } = req.body
 
-  if (!name || !type || !breed || !sex || !yearBorn || !customerId) {
+  if (!name || !type || !breed || !sex || !customerId) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
@@ -133,7 +133,8 @@ const getById = (req, res) => {
       include: [{
         model: Consultation,
         where: {
-          petId: sequelize.col('pet.id')
+          petId: sequelize.col('pet.id'),
+          statusId: 1
         },
         attributes: [
           'id',

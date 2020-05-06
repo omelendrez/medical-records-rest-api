@@ -11,13 +11,14 @@ const create = async (req, res) => {
   if (!name || !phone) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
-
+  /*
   if (!id) {
     const found = await Customer.findOne({ where: { name } })
     if (found) {
       return ReE(res, { success: false, message: 'Ese nombre de cliente ya existe en la base de datos' }, 422)
     }
   }
+  */
   await updateOrCreate(Customer,
     {
       id: {
