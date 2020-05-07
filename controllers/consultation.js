@@ -81,13 +81,13 @@ const getAll = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID'),
+          id: sequelize.col('consultation.petId'),
         },
         attributes: ['name'],
       }, {
         model: Customer,
         where: {
-          id: sequelize.col('consultation.customerID')
+          id: sequelize.col('consultation.customerId')
         },
         attributes: ['name'],
       }]
@@ -142,7 +142,7 @@ const getInactive = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID'),
+          id: sequelize.col('consultation.petId'),
         },
         attributes: ['name']
       }]
@@ -166,6 +166,7 @@ const getById = (req, res) => {
       },
       attributes: [
         'id',
+        'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
@@ -179,7 +180,7 @@ const getById = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID')
+          id: sequelize.col('consultation.petId')
         },
         attributes: ['customerId']
       }]
