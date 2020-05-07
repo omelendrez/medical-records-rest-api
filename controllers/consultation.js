@@ -40,7 +40,7 @@ const getAll = (req, res) => {
   Consultation.belongsTo(Pet);
 
   const Customer = require("../models").customer
-  Pet.belongsTo(Customer)
+  Consultation.belongsTo(Customer)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -58,11 +58,13 @@ const getAll = (req, res) => {
         ],
         statusId: ACTIVE
       },
+      separate: true,
       distinct: true,
       offset,
       limit,
       attributes: [
         'id',
+        'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
         'diagnosis',
@@ -82,15 +84,14 @@ const getAll = (req, res) => {
           id: sequelize.col('consultation.petID'),
         },
         attributes: ['name'],
-        include: [{
-          model: Customer,
-          where: {
-            petId: sequelize.col('pet.id')
-          },
+      }, {
+        model: Customer,
+        where: {
+          id: sequelize.col('consultation.customerID')
+        },
+        attributes: ['name'],
+      }]
 
-        }]
-
-      }],
     })
     .then(consultations => res
       .status(200)
