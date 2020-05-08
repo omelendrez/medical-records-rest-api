@@ -139,10 +139,24 @@ module.exports.getInactive = getInactive
 
 const getDebtors = (req, res) => {
   const Consultation = require('../models').consultation
+  const Status = require('../models').status
+
   Customer.hasMany(Consultation)
+  Customer.belongsTo(Status)
+  Consultation.belongsTo(Customer)
+  Status.hasMany(Customer)
+
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
+  const difference = sequelize.literal('amount-paid');
+
   return Customer
     .findAll({
       tableHint: TableHints.NOLOCK,
+      where: sequelize.where(difference, '<>', 0),
       attributes: [
         'id',
         'name',
@@ -150,21 +164,31 @@ const getDebtors = (req, res) => {
         'phone',
         'email',
         'observations',
-        'statusId'
+        [sequelize.col('status.name'), 'customerStatus'],
+        [sequelize.fn('count', sequelize.col('consultations.id')), 'visits'],
+        [difference, 'debt']
+
       ],
       group: 'name',
       order: [['name', 'ASC']],
       distinct: true,
+      offset,
+      limit,
       include: [{
         model: Consultation,
+        duplicating: false,
         where: {
           customerId: sequelize.col('customer.id')
         },
-        attributes: [
-          [sequelize.fn('count', sequelize.col('consultations.amount')), 'consultations'],
-          [sequelize.fn('sum', sequelize.col('consultations.amount')), 'amount'],
-          [sequelize.fn('sum', sequelize.col('consultations.paid')), 'paid']
-        ],
+        attributes: [],
+        required: true
+      },
+      {
+        model: Status,
+        where: {
+          id: sequelize.col('customer.statusId')
+        },
+        attributes: [],
         required: true
       }]
     })
