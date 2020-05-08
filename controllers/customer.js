@@ -137,9 +137,49 @@ const getInactive = (req, res) => {
 }
 module.exports.getInactive = getInactive
 
+const getDebtors = (req, res) => {
+  const Consultation = require('../models').consultation
+  Customer.hasMany(Consultation)
+  return Customer
+    .findAll({
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'phone',
+        'email',
+        'observations',
+        'statusId'
+      ],
+      group: 'name',
+      order: [['name', 'ASC']],
+      distinct: true,
+      include: [{
+        model: Consultation,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          [sequelize.fn('count', sequelize.col('consultations.amount')), 'consultations'],
+          [sequelize.fn('sum', sequelize.col('consultations.amount')), 'amount'],
+          [sequelize.fn('sum', sequelize.col('consultations.paid')), 'paid']
+        ],
+        required: true
+      }]
+    })
+    .then(debtors => res
+      .status(200)
+      .json({ success: true, debtors }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getDebtors = getDebtors
+
 const getById = (req, res) => {
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
+  const Consultation = require('../models').consultation
+  Customer.hasMany(Consultation)
 
   return Customer
     .findOne({
@@ -165,6 +205,18 @@ const getById = (req, res) => {
           'id', 'name', 'statusId'
         ],
         required: false
+      },
+      {
+        model: Consultation,
+        where: {
+          customerId: sequelize.col('customer.id')
+        },
+        attributes: [
+          [sequelize.fn('count', sequelize.col('consultations.amount')), 'consultations'],
+          [sequelize.fn('sum', sequelize.col('consultations.amount')), 'amount'],
+          [sequelize.fn('sum', sequelize.col('consultations.paid')), 'paid']
+        ],
+        required: true
       }]
     })
     .then(customer => res

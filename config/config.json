@@ -5,7 +5,10 @@
     "database": "vmr",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "dialectOptions": {
+      "decimalNumbers": true
+    }
   },
   "production": {
     "username": "b30107142c3e47",
@@ -13,6 +16,9 @@
     "database": "heroku_b3627cd1b200890",
     "host": "us-cdbr-east-06.cleardb.net",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "dialectOptions": {
+      "decimalNumbers": true
+    }
   }
 }

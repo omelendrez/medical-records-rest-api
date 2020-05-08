@@ -8,6 +8,7 @@ const Status = require('../controllers/status')
 
 router.get('/api/customers', Customer.getAll)
 router.get('/api/customers/inactive', Customer.getInactive)
+router.get('/api/customers/debtors', Customer.getDebtors)
 router.get('/api/customers/:id', Customer.getById)
 router.post('/api/customers', Customer.create)
 router.delete('/api/customers/:id', Customer.deleteRecord)
