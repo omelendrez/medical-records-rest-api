@@ -146,6 +146,7 @@ const getDebtors = (req, res) => {
   Consultation.belongsTo(Customer)
   Status.hasMany(Customer)
 
+  const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
 
@@ -156,7 +157,14 @@ const getDebtors = (req, res) => {
   return Customer
     .findAll({
       tableHint: TableHints.NOLOCK,
-      where: sequelize.where(difference, '<>', 0),
+      where: [
+        sequelize.where(difference, '<>', 0),
+        {
+          name: {
+            [Op.like]: `%${filter}%`
+          }
+        }
+      ],
       attributes: [
         'id',
         'name',
