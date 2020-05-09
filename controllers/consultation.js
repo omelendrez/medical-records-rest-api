@@ -56,7 +56,9 @@ const getAll = (req, res) => {
       where: {
         [Op.or]: [
           { diagnosis: { [Op.like]: `%${filter}%` } },
-          { treatment: { [Op.like]: `%${filter}%` } }
+          { treatment: { [Op.like]: `%${filter}%` } },
+          sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`),
         ],
         statusId: ACTIVE
       },

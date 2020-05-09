@@ -52,9 +52,11 @@ const getAll = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
-        name: {
-          [Op.like]: `%${filter}%`
-        },
+        [Op.or]: [
+          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.address'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.phone'), 'like', `%${filter}%`)
+        ],
         statusId: ACTIVE
       },
       distinct: true,
@@ -68,7 +70,7 @@ const getAll = (req, res) => {
         'email',
         'observations'
       ],
-      include: [{
+      include: {
         model: Pet,
         where: {
           customerId: sequelize.col('customer.id')
@@ -77,7 +79,7 @@ const getAll = (req, res) => {
           'id', 'name', 'statusId'
         ],
         required: false
-      }]
+      }
     })
     .then(customers => res
       .status(200)
@@ -140,7 +142,7 @@ const getDebtors = (req, res) => {
   const difference = sequelize.literal('amount-paid');
 
   return Customer
-    .findAll({
+    .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: [
         sequelize.where(difference, '<>', 0),
@@ -162,7 +164,7 @@ const getDebtors = (req, res) => {
         [difference, 'debt']
 
       ],
-      group: 'name',
+      group: sequelize.col('customer.name'),
       order: [['name', 'ASC']],
       distinct: true,
       offset,
