@@ -74,7 +74,7 @@ const getAll = (req, res) => {
           customerId: sequelize.col('customer.id')
         },
         attributes: [
-          'name'
+          'id', 'name', 'statusId'
         ],
         required: false
       }]
@@ -87,9 +87,6 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
-  const Pet = require("../models").pet;
-  Customer.hasMany(Pet)
-
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -105,7 +102,6 @@ const getInactive = (req, res) => {
         },
         statusId: INACTIVE
       },
-      distinct: true,
       offset,
       limit,
       order: [['updatedAt', 'DESC']],
@@ -118,17 +114,6 @@ const getInactive = (req, res) => {
         'observations',
         'updatedAt'
       ],
-      include: [{
-        model: Pet,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
-        attributes: [
-          'name'
-        ],
-        required: false
-      }]
-
     })
     .then(customers => res
       .status(200)
@@ -213,6 +198,8 @@ const getById = (req, res) => {
   const Consultation = require('../models').consultation
   Customer.hasMany(Consultation)
 
+  const difference = sequelize.literal('amount-paid');
+
   return Customer
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -226,7 +213,8 @@ const getById = (req, res) => {
         'phone',
         'email',
         'observations',
-        'statusId'
+        'statusId',
+        [difference, 'debt']
       ],
       include: [{
         model: Pet,
@@ -243,12 +231,8 @@ const getById = (req, res) => {
         where: {
           customerId: sequelize.col('customer.id')
         },
-        attributes: [
-          [sequelize.fn('count', sequelize.col('consultations.amount')), 'consultations'],
-          [sequelize.fn('sum', sequelize.col('consultations.amount')), 'amount'],
-          [sequelize.fn('sum', sequelize.col('consultations.paid')), 'paid']
-        ],
-        required: true
+        attributes: [],
+        required: false
       }]
     })
     .then(customer => res
