@@ -47,15 +47,14 @@ const getAll = (req, res) => {
   const page = parseInt(req.query.page || 1)
 
   const offset = limit * (page - 1)
-
   return Customer
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
         [Op.or]: [
-          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`),
-          sequelize.where(sequelize.literal('customer.address'), 'like', `%${filter}%`),
-          sequelize.where(sequelize.literal('customer.phone'), 'like', `%${filter}%`)
+          { name: { [Op.like]: `%${filter}%` } },
+          { address: { [Op.like]: `%${filter}%` } },
+          { phone: { [Op.like]: `%${filter}%` } }
         ],
         statusId: ACTIVE
       },
@@ -72,13 +71,10 @@ const getAll = (req, res) => {
       ],
       include: {
         model: Pet,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [
           'id', 'name', 'statusId'
         ],
-        required: false
+        required: true
       }
     })
     .then(customers => res
