@@ -122,8 +122,10 @@ module.exports.getInactive = getInactive
 
 const getDebtors = (req, res) => {
   const Consultation = require('../models').consultation
+  const Pet = require('../models').pet
   const Status = require('../models').status
 
+  Customer.hasMany(Pet)
   Customer.hasMany(Consultation)
   Customer.belongsTo(Status)
   Consultation.belongsTo(Customer)
@@ -168,18 +170,17 @@ const getDebtors = (req, res) => {
       include: [{
         model: Consultation,
         duplicating: false,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [],
         required: true
       },
       {
         model: Status,
-        where: {
-          id: sequelize.col('customer.statusId')
-        },
         attributes: [],
+        required: true
+      },
+      {
+        model: Pet,
+        attributes: ['id', 'name', 'statusId'],
         required: true
       }]
     })
