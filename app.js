@@ -3,6 +3,7 @@ const logger = require('morgan')
 const bodyParser = require('body-parser')
 const pe = require('parse-error')
 const cors = require('cors')
+require('dotenv').config()
 
 const customer = require('./routes/customer')
 const pet = require('./routes/pet')
