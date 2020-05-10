@@ -6,11 +6,13 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id, date, diagnosis, treatment } = req.body
+  const { id, date, amount, paid, paymentMethod } = req.body
 
-  if (!date || !diagnosis || !treatment) {
-    return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
-  }
+  if (amount.length === 0 || paid.length === 0) return ReE(res, { success: false, message: 'Los importes no pueden quedar vacíos' }, 422)
+  if (isNaN(amount) || isNaN(paid)) return ReE(res, { success: false, message: 'Los importes deben contener números' }, 422)
+  if (paid > 0 && !paymentMethod) return ReE(res, { success: false, message: 'Debe seleccionar el método de pago' }, 422)
+  if (paid === 0) req.body.paymentMethod = ''
+  if (!date) return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
 
   if (!req.body.nextConsultation) {
     delete req.body.nextConsultation
@@ -40,7 +42,7 @@ const getAll = (req, res) => {
   Consultation.belongsTo(Pet);
 
   const Customer = require("../models").customer
-  Pet.belongsTo(Customer)
+  Consultation.belongsTo(Customer)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -54,15 +56,19 @@ const getAll = (req, res) => {
       where: {
         [Op.or]: [
           { diagnosis: { [Op.like]: `%${filter}%` } },
-          { treatment: { [Op.like]: `%${filter}%` } }
+          { treatment: { [Op.like]: `%${filter}%` } },
+          sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`),
         ],
         statusId: ACTIVE
       },
+      separate: true,
       distinct: true,
       offset,
       limit,
       attributes: [
         'id',
+        'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
         'diagnosis',
@@ -79,18 +85,17 @@ const getAll = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID'),
+          id: sequelize.col('consultation.petId'),
         },
         attributes: ['name'],
-        include: [{
-          model: Customer,
-          where: {
-            petId: sequelize.col('pet.id')
-          },
+      }, {
+        model: Customer,
+        where: {
+          id: sequelize.col('consultation.customerId')
+        },
+        attributes: ['name'],
+      }]
 
-        }]
-
-      }],
     })
     .then(consultations => res
       .status(200)
@@ -141,7 +146,7 @@ const getInactive = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID'),
+          id: sequelize.col('consultation.petId'),
         },
         attributes: ['name']
       }]
@@ -165,6 +170,7 @@ const getById = (req, res) => {
       },
       attributes: [
         'id',
+        'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
@@ -178,7 +184,7 @@ const getById = (req, res) => {
       include: [{
         model: Pet,
         where: {
-          id: sequelize.col('consultation.petID')
+          id: sequelize.col('consultation.petId')
         },
         attributes: ['customerId']
       }]

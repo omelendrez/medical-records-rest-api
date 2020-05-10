@@ -4,7 +4,10 @@ const bodyParser = require('body-parser')
 const pe = require('parse-error')
 const cors = require('cors')
 
-const v1 = require('./routes/v1')
+const customer = require('./routes/customer')
+const pet = require('./routes/pet')
+const consultation = require('./routes/consultation')
+
 const models = require('./models')
 const CONFIG = require('./config')
 
@@ -38,7 +41,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use('/', v1)
+app.use('/api/customers', customer)
+app.use('/api/pets', pet)
+app.use('/api/consultations', consultation)
 
 app.use('/', function (req, res) {
   res.statusCode = 422
