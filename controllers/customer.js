@@ -159,8 +159,7 @@ const getDebtors = (req, res) => {
         'observations',
         [sequelize.col('status.name'), 'customerStatus'],
         [sequelize.fn('count', sequelize.col('consultations.id')), 'visits'],
-        [difference, 'debt']
-
+        [sequelize.fn('sum', difference), 'debt']
       ],
       group: sequelize.col('customer.name'),
       order: [['name', 'ASC']],
@@ -213,13 +212,10 @@ const getById = (req, res) => {
         'email',
         'observations',
         'statusId',
-        [difference, 'debt']
+        [sequelize.fn('sum', difference), 'debt']
       ],
       include: [{
         model: Pet,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [
           'id', 'name', 'statusId'
         ],
@@ -227,11 +223,9 @@ const getById = (req, res) => {
       },
       {
         model: Consultation,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [],
-        required: false
+        required: false,
+        duplicating: false
       }]
     })
     .then(customer => res
