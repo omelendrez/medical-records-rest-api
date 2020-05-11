@@ -122,8 +122,10 @@ module.exports.getInactive = getInactive
 
 const getDebtors = (req, res) => {
   const Consultation = require('../models').consultation
+  const Pet = require('../models').pet
   const Status = require('../models').status
 
+  Customer.hasMany(Pet)
   Customer.hasMany(Consultation)
   Customer.belongsTo(Status)
   Consultation.belongsTo(Customer)
@@ -157,8 +159,7 @@ const getDebtors = (req, res) => {
         'observations',
         [sequelize.col('status.name'), 'customerStatus'],
         [sequelize.fn('count', sequelize.col('consultations.id')), 'visits'],
-        [difference, 'debt']
-
+        [sequelize.fn('sum', difference), 'debt']
       ],
       group: sequelize.col('customer.name'),
       order: [['name', 'ASC']],
@@ -168,18 +169,17 @@ const getDebtors = (req, res) => {
       include: [{
         model: Consultation,
         duplicating: false,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [],
         required: true
       },
       {
         model: Status,
-        where: {
-          id: sequelize.col('customer.statusId')
-        },
         attributes: [],
+        required: true
+      },
+      {
+        model: Pet,
+        attributes: ['id', 'name', 'statusId'],
         required: true
       }]
     })
@@ -212,13 +212,10 @@ const getById = (req, res) => {
         'email',
         'observations',
         'statusId',
-        [difference, 'debt']
+        [sequelize.fn('sum', difference), 'debt']
       ],
       include: [{
         model: Pet,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [
           'id', 'name', 'statusId'
         ],
@@ -226,11 +223,9 @@ const getById = (req, res) => {
       },
       {
         model: Consultation,
-        where: {
-          customerId: sequelize.col('customer.id')
-        },
         attributes: [],
-        required: false
+        required: false,
+        duplicating: false
       }]
     })
     .then(customer => res

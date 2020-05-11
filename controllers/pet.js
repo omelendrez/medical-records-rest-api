@@ -32,6 +32,11 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const Customer = require('../models').customer
+
+  Customer.hasMany(Pet)
+  Pet.belongsTo(Customer)
+
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -58,8 +63,13 @@ const getAll = (req, res) => {
         'sex',
         'weight',
         'yearBorn',
-        'observations'
-      ]
+        'observations',
+        [sequelize.col('customer.name'), 'customerName']
+      ],
+      include: {
+        model: Customer,
+        attributes: []
+      }
     })
     .then(pets => res
       .status(200)
