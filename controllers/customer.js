@@ -239,9 +239,12 @@ const getBalanceById = (req, res) => {
         [sequelize.fn('sum', sequelize.literal('amount-paid')), 'debt']
       ]
     })
-    .then(debt => res
-      .status(200)
-      .json({ success: true, debt })
+    .then(data => {
+      const debt = data[0]
+      res
+        .status(200)
+        .json({ success: true, debt })
+    }
     )
 }
 
