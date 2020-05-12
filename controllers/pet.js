@@ -47,9 +47,10 @@ const getAll = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
-        name: {
-          [Op.like]: `%${filter}%`
-        },
+        [Op.or]: [
+          { name: { [Op.like]: `%${filter}%` } },
+          { breed: { [Op.like]: `%${filter}%` } }
+        ],
         statusId: ACTIVE
       },
       offset,
@@ -89,9 +90,10 @@ const getInactive = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: {
-        name: {
-          [Op.like]: `%${filter}%`
-        },
+        [Op.or]: [
+          { name: { [Op.like]: `%${filter}%` } },
+          { breed: { [Op.like]: `%${filter}%` } }
+        ],
         statusId: INACTIVE
       },
       offset,
