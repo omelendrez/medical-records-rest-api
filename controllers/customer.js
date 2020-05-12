@@ -193,10 +193,6 @@ module.exports.getDebtors = getDebtors
 const getById = (req, res) => {
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)
-  const Consultation = require('../models').consultation
-  Customer.hasMany(Consultation)
-
-  const difference = sequelize.literal('amount-paid');
 
   return Customer
     .findOne({
@@ -211,8 +207,7 @@ const getById = (req, res) => {
         'phone',
         'email',
         'observations',
-        'statusId',
-        [sequelize.fn('sum', difference), 'debt']
+        'statusId'
       ],
       include: [{
         model: Pet,
@@ -220,12 +215,6 @@ const getById = (req, res) => {
           'id', 'name', 'statusId'
         ],
         required: false
-      },
-      {
-        model: Consultation,
-        attributes: [],
-        required: false,
-        duplicating: false
       }]
     })
     .then(customer => res
@@ -234,6 +223,32 @@ const getById = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getById = getById
+
+const getBalanceById = (req, res) => {
+  const Consultation = require('../models').consultation
+
+  return Consultation
+    .findAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        customerId: req.params.id
+      },
+      attributes: [
+        [sequelize.fn('sum', sequelize.col('amount')), 'amount'],
+        [sequelize.fn('sum', sequelize.col('paid')), 'paid'],
+        [sequelize.fn('sum', sequelize.literal('amount-paid')), 'debt']
+      ]
+    })
+    .then(data => {
+      const debt = data[0]
+      res
+        .status(200)
+        .json({ success: true, debt })
+    }
+    )
+}
+
+module.exports.getBalanceById = getBalanceById
 
 const deleteRecord = (req, res) => {
   return Customer
