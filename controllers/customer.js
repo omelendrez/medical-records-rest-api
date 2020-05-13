@@ -74,7 +74,7 @@ const getAll = (req, res) => {
         attributes: [
           'id', 'name', 'statusId'
         ],
-        required: true
+        required: false
       }
     })
     .then(customers => res
