@@ -251,6 +251,7 @@ const getBalanceById = (req, res) => {
 module.exports.getBalanceById = getBalanceById
 
 const deleteRecord = (req, res) => {
+  const Pet = require('../models').pet
   return Customer
     .findOne({
       where: {
@@ -261,6 +262,9 @@ const deleteRecord = (req, res) => {
       //      customer.destroy()
       customer.update({ statusId: INACTIVE })
         .then(customer => {
+          Pet
+            .findAll({ where: { customerId: req.params.id } })
+            .then(pets => pets.map(pet => pet.update({ statusId: INACTIVE })))
           const resp = {
             message: `Cliente "${customer.name}" eliminado`,
             customer
@@ -274,6 +278,7 @@ const deleteRecord = (req, res) => {
 module.exports.deleteRecord = deleteRecord
 
 const restoreRecord = (req, res) => {
+  const Pet = require('../models').pet
   return Customer
     .findOne({
       where: {
@@ -284,6 +289,9 @@ const restoreRecord = (req, res) => {
       //      customer.destroy()
       customer.update({ statusId: ACTIVE })
         .then(customer => {
+          Pet
+            .findAll({ where: { customerId: req.params.id } })
+            .then(pets => pets.map(pet => pet.update({ statusId: ACTIVE })))
           const resp = {
             message: `Cliente "${customer.name}" restaurado`,
             customer
