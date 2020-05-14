@@ -138,17 +138,15 @@ const getInactive = (req, res) => {
         'observations',
         'amount',
         'paymentMethod',
-        'paid'
+        'paid',
+        [sequelize.col('pet.name'), 'petName']
       ],
       order: [
         ['date', 'DESC']
       ],
       include: [{
         model: Pet,
-        where: {
-          id: sequelize.col('consultation.petId'),
-        },
-        attributes: ['name']
+        attributes: []
       }]
     })
     .then(consultations => res
