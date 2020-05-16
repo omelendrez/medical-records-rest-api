@@ -208,8 +208,8 @@ const getNextConsultations = (req, res) => {
     .findAndCountAll({
       where: [sequelize.where(sequelize.col('nextConsultation'), '>=', sequelize.fn('CURDATE'))],
       attributes: [
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'lastConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%m-%Y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%m-%Y'), 'lastConsultation'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('customer.phone'), 'phone'],
