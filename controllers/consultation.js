@@ -221,9 +221,9 @@ const getNextConsultations = (req, res) => {
         { model: Customer, attributes: [] }
       ]
     })
-    .then(consultation => res
+    .then(consultations => res
       .status(200)
-      .json({ success: true, consultation }))
+      .json({ success: true, consultations }))
     .catch(err => ReE(res, err, 422))
 }
 
