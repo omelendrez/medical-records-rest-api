@@ -194,6 +194,38 @@ const getById = (req, res) => {
 }
 module.exports.getById = getById
 
+const getNextConsultations = (req, res) => {
+  const Pet = require("../models").pet
+  Consultation.belongsTo(Pet);
+
+  const Customer = require("../models").customer
+  Consultation.belongsTo(Customer)
+
+  return Consultation
+    .findAndCountAll({
+      where: [sequelize.where(sequelize.col('nextConsultation'), '>=', sequelize.fn('CURDATE'))],
+      attributes: [
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'lastConsultation'],
+        [sequelize.col('pet.name'), 'petName'],
+        [sequelize.col('customer.name'), 'customerName'],
+        [sequelize.col('customer.phone'), 'phone'],
+        [sequelize.col('customer.address'), 'address']
+      ],
+      order: [['nextConsultation', 'ASC']],
+      include: [
+        { model: Pet, attributes: [] },
+        { model: Customer, attributes: [] }
+      ]
+    })
+    .then(consultation => res
+      .status(200)
+      .json({ success: true, consultation }))
+    .catch(err => ReE(res, err, 422))
+}
+
+module.exports.getNextConsultations = getNextConsultations
+
 const deleteRecord = (req, res) => {
   return Consultation
     .findOne({

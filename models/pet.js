@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: ''
     },
     observations: {
-      type: DataTypes.STRING(5000),
+      type: DataTypes.STRING(500),
       defaultValue: ''
     },
     statusId: {
