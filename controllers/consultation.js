@@ -209,8 +209,8 @@ const getNextConsultations = (req, res) => {
       where: [sequelize.where(sequelize.col('nextConsultation'), '>=', sequelize.fn('CURDATE'))],
       attributes: [
         'id',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%m-%Y'), 'nextConsultation'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%d-%m-%Y'), 'lastConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'lastConsultation'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('customer.phone'), 'phone'],
