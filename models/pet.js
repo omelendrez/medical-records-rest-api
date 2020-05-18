@@ -30,9 +30,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: ''
     },
-    yearBorn: {
-      type: DataTypes.STRING,
-      defaultValue: ''
+    birthDate: {
+      type: DataTypes.DATE
     },
     observations: {
       type: DataTypes.STRING(500),
