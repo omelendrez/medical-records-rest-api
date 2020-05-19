@@ -6,7 +6,7 @@ const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id, name, type, breed, sex, yearBorn, customerId } = req.body
+  const { id, name, type, breed, sex, birthDate, customerId } = req.body
 
   if (!name || !type || !breed || !sex || !customerId) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
@@ -63,7 +63,7 @@ const getAll = (req, res) => {
         'breed',
         'sex',
         'weight',
-        'yearBorn',
+        'birthDate',
         'observations',
         [sequelize.col('customer.name'), 'customerName']
       ],
@@ -107,7 +107,7 @@ const getInactive = (req, res) => {
         'breed',
         'sex',
         'weight',
-        'yearBorn',
+        'birthDate',
         'observations'
       ]
     })
@@ -135,7 +135,7 @@ const getById = (req, res) => {
         'breed',
         'sex',
         'weight',
-        'yearBorn',
+        [sequelize.fn('date_format', sequelize.col('birthDate'), '%Y-%m-%d'), 'birthDate'],
         'observations',
         'statusId'
       ],
