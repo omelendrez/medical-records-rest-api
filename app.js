@@ -8,6 +8,8 @@ require('dotenv').config()
 const customer = require('./routes/customer')
 const pet = require('./routes/pet')
 const consultation = require('./routes/consultation')
+const vaccination = require('./routes/vaccination')
+const deworming = require('./routes/deworming')
 
 const models = require('./models')
 const CONFIG = require('./config')
@@ -45,6 +47,8 @@ app.use(function (req, res, next) {
 app.use('/api/customers', customer)
 app.use('/api/pets', pet)
 app.use('/api/consultations', consultation)
+app.use('/api/vaccinations', vaccination)
+app.use('/api/dewormings', deworming)
 
 app.use('/', function (req, res) {
   res.statusCode = 422
