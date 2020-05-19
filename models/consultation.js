@@ -4,9 +4,12 @@ module.exports = (sequelize, DataTypes) => {
     customerId: DataTypes.INTEGER,
     petId: DataTypes.INTEGER,
     date: DataTypes.DATE,
+    anamnesis: DataTypes.STRING(500),
     clinicalExamination: DataTypes.STRING(500),
     diagnosis: DataTypes.STRING(500),
     treatment: DataTypes.STRING(500),
+    vaccination: DataTypes.STRING(500),
+    deworming: DataTypes.STRING(500),
     nextConsultation: {
       type: DataTypes.DATE,
       defaultValue: null

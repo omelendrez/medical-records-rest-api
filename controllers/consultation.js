@@ -55,6 +55,8 @@ const getAll = (req, res) => {
       tableHint: TableHints.NOLOCK,
       where: {
         [Op.or]: [
+          { anamnesis: { [Op.like]: `%${filter}%` } },
+          { clinicalExamination: { [Op.like]: `%${filter}%` } },
           { diagnosis: { [Op.like]: `%${filter}%` } },
           { treatment: { [Op.like]: `%${filter}%` } },
           sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
@@ -71,11 +73,8 @@ const getAll = (req, res) => {
         'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
-        'clinicalExamination',
         'diagnosis',
-        'treatment',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-        'observations',
         'amount',
         'paymentMethod',
         'paid'
@@ -133,14 +132,8 @@ const getInactive = (req, res) => {
         'id',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
-        'clinicalExamination',
         'diagnosis',
-        'treatment',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-        'observations',
-        'amount',
-        'paymentMethod',
-        'paid',
         [sequelize.col('pet.name'), 'petName']
       ],
       order: [
@@ -173,11 +166,13 @@ const getById = (req, res) => {
         'customerId',
         'petId',
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'anamnesis',
         'clinicalExamination',
         'diagnosis',
         'treatment',
+        'vaccination',
+        'deworming',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
-        'observations',
         'amount',
         'paymentMethod',
         'paid'
@@ -210,11 +205,8 @@ const getNextConsultations = (req, res) => {
       attributes: [
         'id',
         [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'lastConsultation'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
-        [sequelize.col('customer.phone'), 'phone'],
-        [sequelize.col('customer.address'), 'address'],
         'customerId',
         'petId'
       ],
