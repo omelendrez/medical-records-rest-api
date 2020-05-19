@@ -135,7 +135,7 @@ const getById = (req, res) => {
         'breed',
         'sex',
         'weight',
-        'birthDate',
+        [sequelize.fn('date_format', sequelize.col('birthDate'), '%Y-%m-%d'), 'birthDate'],
         'observations',
         'statusId'
       ],
