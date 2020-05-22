@@ -4,6 +4,7 @@ const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
+const Account = require('./account')
 
 const create = async (req, res) => {
   const { id, date, amount, paid, paymentMethod } = req.body
@@ -27,6 +28,11 @@ const create = async (req, res) => {
     req.body
   )
     .then(record => {
+      if (paid !== 0 || amount !== 0) {
+        req.body.credit = paid
+        req.body.debit = amount
+        Account.create(req, res)
+      }
       const resp = {
         message: 'Datos guardados satisfactoriamente',
         record
