@@ -1,0 +1,12 @@
+### Lista clientes
+GET http://localhost:3000/api/consultations
+?filter=
+&page=1
+&limit=500
+
+
+### Lista por cliente
+GET http://localhost:3000/api/consultations/by-pet/1
+
+### Lista visitas programadas
+GET http://localhost:3000/api/consultations/programmed-visits

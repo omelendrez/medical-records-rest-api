@@ -10,13 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     treatment: DataTypes.STRING(500),
     vaccination: DataTypes.STRING(500),
     deworming: DataTypes.STRING(500),
-    nextConsultation: {
+    nextAppointment: {
       type: DataTypes.DATE,
       defaultValue: null
-    },
-    observations: {
-      type: DataTypes.STRING,
-      defaultValue: ''
     },
     amount: {
       type: DataTypes.DECIMAL(10, 2),

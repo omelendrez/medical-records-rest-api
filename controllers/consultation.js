@@ -14,8 +14,8 @@ const create = async (req, res) => {
   if (paid === 0) req.body.paymentMethod = ''
   if (!date) return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
 
-  if (!req.body.nextConsultation) {
-    delete req.body.nextConsultation
+  if (!req.body.nextAppointment) {
+    delete req.body.nextAppointment
   }
 
   await updateOrCreate(Consultation,
@@ -60,42 +60,38 @@ const getAll = (req, res) => {
           { diagnosis: { [Op.like]: `%${filter}%` } },
           { treatment: { [Op.like]: `%${filter}%` } },
           sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
-          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`)
         ],
         statusId: ACTIVE
       },
-      separate: true,
-      distinct: true,
       offset,
       limit,
       attributes: [
         'id',
         'customerId',
         'petId',
+        [sequelize.col('customer.name'), 'customerName'],
+        [sequelize.col('pet.name'), 'petName'],
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
         'diagnosis',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%d-%b-%y'), 'nextAppointment'],
         'amount',
         'paymentMethod',
-        'paid'
+        'paid',
       ],
       order: [
         ['date', 'DESC']
       ],
-      include: [{
-        model: Pet,
-        where: {
-          id: sequelize.col('consultation.petId'),
+      include: [
+        {
+          model: Pet,
+          attributes: []
         },
-        attributes: ['name'],
-      }, {
-        model: Customer,
-        where: {
-          id: sequelize.col('consultation.customerId')
-        },
-        attributes: ['name'],
-      }]
-
+        {
+          model: Customer,
+          attributes: []
+        }
+      ]
     })
     .then(consultations => res
       .status(200)
@@ -105,8 +101,11 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
-  const Pet = require("../models").pet;
+  const Pet = require("../models").pet
   Consultation.belongsTo(Pet);
+
+  const Customer = require("../models").customer
+  Consultation.belongsTo(Customer)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -119,42 +118,53 @@ const getInactive = (req, res) => {
       tableHint: TableHints.NOLOCK,
       where: {
         [Op.or]: [
+          { anamnesis: { [Op.like]: `%${filter}%` } },
+          { clinicalExamination: { [Op.like]: `%${filter}%` } },
           { diagnosis: { [Op.like]: `%${filter}%` } },
-          { treatment: { [Op.like]: `%${filter}%` } }
+          { treatment: { [Op.like]: `%${filter}%` } },
+          sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
+          sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`)
         ],
         statusId: INACTIVE
       },
-      distinct: true,
       offset,
       limit,
-      order: [['updatedAt', 'DESC']],
       attributes: [
         'id',
+        'customerId',
         'petId',
+        [sequelize.col('customer.name'), 'customerName'],
+        [sequelize.col('pet.name'), 'petName'],
         [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
         'diagnosis',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-        [sequelize.col('pet.name'), 'petName']
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%d-%b-%y'), 'nextAppointment'],
+        'amount',
+        'paymentMethod',
+        'paid',
       ],
       order: [
         ['date', 'DESC']
       ],
-      include: [{
-        model: Pet,
-        attributes: []
-      }]
+      include: [
+        {
+          model: Pet,
+          attributes: []
+        },
+        {
+          model: Customer,
+          attributes: []
+        }
+      ]
     })
     .then(consultations => res
       .status(200)
       .json({ success: true, consultations }))
     .catch(err => ReE(res, err, 422))
 }
+
 module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
-  const Pet = require('../models').pet
-  Consultation.belongsTo(Pet)
-
   return Consultation
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -170,20 +180,11 @@ const getById = (req, res) => {
         'clinicalExamination',
         'diagnosis',
         'treatment',
-        'vaccination',
-        'deworming',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%Y-%m-%d'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         'amount',
         'paymentMethod',
         'paid'
-      ],
-      include: [{
-        model: Pet,
-        where: {
-          id: sequelize.col('consultation.petId')
-        },
-        attributes: ['customerId']
-      }]
+      ]
     })
     .then(consultation => res
       .status(200)
@@ -192,7 +193,47 @@ const getById = (req, res) => {
 }
 module.exports.getById = getById
 
-const getNextConsultations = (req, res) => {
+
+const getByPet = (req, res) => {
+
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
+
+  const offset = limit * (page - 1)
+
+  return Consultation
+    .findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        statusId: ACTIVE,
+        petId: req.params.id
+      },
+      offset,
+      limit,
+      attributes: [
+        'id',
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        'anamnesis',
+        'clinicalExamination',
+        'diagnosis',
+        'treatment',
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%d-%b-%y'), 'nextAppointment'],
+        'amount',
+        'paymentMethod',
+        'paid',
+      ],
+      order: [
+        ['date', 'DESC']
+      ]
+    })
+    .then(consultations => res
+      .status(200)
+      .json({ success: true, consultations }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getByPet = getByPet
+
+const getnextAppointments = (req, res) => {
   const Pet = require("../models").pet
   Consultation.belongsTo(Pet);
 
@@ -201,16 +242,16 @@ const getNextConsultations = (req, res) => {
 
   return Consultation
     .findAndCountAll({
-      where: [sequelize.where(sequelize.col('nextConsultation'), '>=', sequelize.fn('CURDATE'))],
+      where: [sequelize.where(sequelize.col('nextAppointment'), '>=', sequelize.fn('CURDATE'))],
       attributes: [
         'id',
-        [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%d-%b-%y'), 'nextAppointment'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
         'customerId',
         'petId'
       ],
-      order: [['nextConsultation', 'ASC']],
+      order: [['nextAppointment', 'ASC']],
       include: [
         { model: Pet, attributes: [] },
         { model: Customer, attributes: [] }
@@ -222,7 +263,7 @@ const getNextConsultations = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 
-module.exports.getNextConsultations = getNextConsultations
+module.exports.getnextAppointments = getnextAppointments
 
 const deleteRecord = (req, res) => {
   return Consultation
