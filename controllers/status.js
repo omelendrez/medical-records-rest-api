@@ -4,7 +4,25 @@ const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const { ReS, ReE, updateOrCreate } = require('../helpers')
 
-module.exports.create = (req, res) => ReE(res, 'La tabla de status es una tabla reservada y su contenido no puede ser modificado')
+module.exports.create = async (req, res) => {
+  await updateOrCreate(Status,
+    {
+      id: {
+        [Op.eq]: null
+      }
+    },
+    req.body
+  )
+    .then(record => {
+      const resp = {
+        message: 'Datos guardados satisfactoriamente',
+        record
+      }
+      return ReS(res, resp, 201)
+    })
+    .catch(err => ReE(res, err, 422))
+
+}
 
 const getAll = (req, res) => {
   return Status
