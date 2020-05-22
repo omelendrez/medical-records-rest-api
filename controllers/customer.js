@@ -67,7 +67,8 @@ const getAll = (req, res) => {
         'address',
         'phone',
         'email',
-        'observations'
+        'observations',
+        'balance'
       ],
       include: {
         model: Pet,
@@ -121,14 +122,13 @@ const getInactive = (req, res) => {
 module.exports.getInactive = getInactive
 
 const getDebtors = (req, res) => {
-  const Consultation = require('../models').consultation
+
   const Pet = require('../models').pet
   const Status = require('../models').status
 
   Customer.hasMany(Pet)
-  Customer.hasMany(Consultation)
+
   Customer.belongsTo(Status)
-  Consultation.belongsTo(Customer)
   Status.hasMany(Customer)
 
   const filter = req.query.filter || ''
@@ -137,13 +137,11 @@ const getDebtors = (req, res) => {
 
   const offset = limit * (page - 1)
 
-  const difference = sequelize.literal('amount-paid');
-
   return Customer
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       where: [
-        sequelize.where(difference, '<>', 0),
+        sequelize.where(sequelize.col('balance'), '<>', 0),
         {
           name: {
             [Op.like]: `%${filter}%`
@@ -158,30 +156,22 @@ const getDebtors = (req, res) => {
         'email',
         'observations',
         [sequelize.col('status.name'), 'customerStatus'],
-        [sequelize.fn('count', sequelize.col('consultations.id')), 'visits'],
-        [sequelize.fn('sum', difference), 'debt']
+        'balance'
       ],
-      group: sequelize.col('customer.name'),
       order: [['name', 'ASC']],
-      distinct: true,
       offset,
       limit,
-      include: [{
-        model: Consultation,
-        duplicating: false,
-        attributes: [],
-        required: true
-      },
-      {
-        model: Status,
-        attributes: [],
-        required: true
-      },
-      {
-        model: Pet,
-        attributes: ['id', 'name', 'statusId'],
-        required: true
-      }]
+      include: [
+        {
+          model: Status,
+          attributes: [],
+          required: true
+        },
+        {
+          model: Pet,
+          attributes: ['id', 'name', 'statusId'],
+          required: false
+        }]
     })
     .then(debtors => res
       .status(200)
@@ -223,32 +213,6 @@ const getById = (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getById = getById
-
-const getBalanceById = (req, res) => {
-  const Consultation = require('../models').consultation
-
-  return Consultation
-    .findAll({
-      tableHint: TableHints.NOLOCK,
-      where: {
-        customerId: req.params.id
-      },
-      attributes: [
-        [sequelize.fn('sum', sequelize.col('amount')), 'amount'],
-        [sequelize.fn('sum', sequelize.col('paid')), 'paid'],
-        [sequelize.fn('sum', sequelize.literal('amount-paid')), 'debt']
-      ]
-    })
-    .then(data => {
-      const debt = data[0]
-      res
-        .status(200)
-        .json({ success: true, debt })
-    }
-    )
-}
-
-module.exports.getBalanceById = getBalanceById
 
 const deleteRecord = (req, res) => {
   const Pet = require('../models').pet
