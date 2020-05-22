@@ -10,6 +10,8 @@ const pet = require('./routes/pet')
 const consultation = require('./routes/consultation')
 const vaccination = require('./routes/vaccination')
 const deworming = require('./routes/deworming')
+const account = require('./routes/account')
+const status = require('./routes/status')
 
 const models = require('./models')
 const CONFIG = require('./config')
@@ -49,6 +51,8 @@ app.use('/api/pets', pet)
 app.use('/api/consultations', consultation)
 app.use('/api/vaccinations', vaccination)
 app.use('/api/dewormings', deworming)
+app.use('/api/accounts', account)
+app.use('/api/status', status)
 
 app.use('/', function (req, res) {
   res.statusCode = 422
