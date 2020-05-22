@@ -8,3 +8,6 @@ content-type: application/json
     "credit": 1000,
     "debit": 1500
 }
+
+### Lista los saldos
+GET http://localhost:3000/api/accounts/1

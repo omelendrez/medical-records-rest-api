@@ -58,3 +58,24 @@ const create = async (req, res) => {
     .catch(err => ReE(res, err, 422))
 }
 module.exports.create = create
+
+const getAll = (req, res) => {
+
+  return Account
+    .findAndCountAll({
+      where: {
+        customerId: req.params.id
+      },
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        'credit',
+        'debit'
+      ]
+    })
+    .then(accounts => res
+      .status(200)
+      .json({ success: true, accounts }))
+    .catch(err => ReE(res, err, 422))
+}
+module.exports.getAll = getAll
