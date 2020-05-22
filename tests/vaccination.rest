@@ -1,0 +1,37 @@
+### Lista vacunaciones
+GET http://localhost:3000/api/vaccinations
+?filter=
+&page=1
+&limit=500
+
+### Crear vacunación
+POST http://localhost:3000/api/vaccinations
+content-type: application/json
+
+{
+  "customerId": 1,
+  "petId": 1,
+  "date": "2020-05-20",
+  "nextAppointment": "2020-05-21",
+  "vaccination": "Antivariólica",
+  "amount": "1050",
+  "paymentMethod": "",
+  "paid": "0"
+}
+
+### Modificar vacunación
+POST  http://localhost:3000/api/vaccinations
+content-type: application/json
+
+{
+  "id": 1,
+  "date": "2020-05-22",
+  "vaccination":"Vacunas 1, 2 y 3",
+  "nextAppointment": "2020-06-25"
+}
+
+### Lista de vacunaciones por paciente
+GET http://localhost:3000/api/vaccinations/by-pet/1
+
+### Lista visitas programadas de vacunaciones
+GET http://localhost:3000/api/vaccinations/programmed-visits

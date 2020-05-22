@@ -9,12 +9,13 @@ const Account = require('./account')
 const create = async (req, res) => {
   const { id, date, amount, paid, paymentMethod } = req.body
 
-  if (amount.length === 0 || paid.length === 0) return ReE(res, { success: false, message: 'Los importes no pueden quedar vacíos' }, 422)
-  if (isNaN(amount) || isNaN(paid)) return ReE(res, { success: false, message: 'Los importes deben contener números' }, 422)
-  if (paid > 0 && !paymentMethod) return ReE(res, { success: false, message: 'Debe seleccionar el método de pago' }, 422)
-  if (paid === 0) req.body.paymentMethod = ''
-  if (!date) return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
-
+  if (!id) {
+    if (amount.length === 0 || paid.length === 0) return ReE(res, { success: false, message: 'Los importes no pueden quedar vacíos' }, 422)
+    if (isNaN(amount) || isNaN(paid)) return ReE(res, { success: false, message: 'Los importes deben contener números' }, 422)
+    if (paid > 0 && !paymentMethod) return ReE(res, { success: false, message: 'Debe seleccionar el método de pago' }, 422)
+    if (paid === 0) req.body.paymentMethod = ''
+    if (!date) return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
+  }
   if (!req.body.nextAppointment) {
     delete req.body.nextAppointment
   }
@@ -28,7 +29,7 @@ const create = async (req, res) => {
     req.body
   )
     .then(record => {
-      if (paid !== 0 || amount !== 0) {
+      if (paid || amount) {
         req.body.credit = paid
         req.body.debit = amount
         Account.create(req, res)
@@ -96,9 +97,9 @@ const getAll = (req, res) => {
         }
       ]
     })
-    .then(vaccinations => res
+    .then(dewormings => res
       .status(200)
-      .json({ success: true, vaccinations }))
+      .json({ success: true, dewormings }))
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll
@@ -159,9 +160,9 @@ const getInactive = (req, res) => {
         }
       ]
     })
-    .then(vaccinations => res
+    .then(dewormings => res
       .status(200)
-      .json({ success: true, vaccinations }))
+      .json({ success: true, dewormings }))
     .catch(err => ReE(res, err, 422))
 }
 
@@ -223,9 +224,9 @@ const getByPet = (req, res) => {
         ['date', 'DESC']
       ]
     })
-    .then(vaccinations => res
+    .then(dewormings => res
       .status(200)
-      .json({ success: true, vaccinations }))
+      .json({ success: true, dewormings }))
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getByPet = getByPet
@@ -254,9 +255,9 @@ const getnextAppointments = (req, res) => {
         { model: Customer, attributes: [] }
       ]
     })
-    .then(vaccinations => res
+    .then(dewormings => res
       .status(200)
-      .json({ success: true, vaccinations }))
+      .json({ success: true, dewormings }))
     .catch(err => ReE(res, err, 422))
 }
 
@@ -278,9 +279,9 @@ const deleteRecord = (req, res) => {
           }
           return ReS(res, resp, 200)
         })
-        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la vacunación'))
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la desparasitación'))
     )
-    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la vacunación'))
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la desparasitación'))
 }
 module.exports.deleteRecord = deleteRecord
 
@@ -300,8 +301,8 @@ const restoreRecord = (req, res) => {
           }
           return ReS(res, resp, 200)
         })
-        .catch(() => ReE(res, 'Error ocurrido intentando restaurar la vacunación'))
+        .catch(() => ReE(res, 'Error ocurrido intentando restaurar la desparasitación'))
     )
-    .catch(() => ReE(res, 'Error ocurrido intentando restaurar la vacunación'))
+    .catch(() => ReE(res, 'Error ocurrido intentando restaurar la desparasitación'))
 }
 module.exports.restoreRecord = restoreRecord

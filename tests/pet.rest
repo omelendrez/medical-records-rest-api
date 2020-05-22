@@ -14,3 +14,12 @@ content-type: application/json
 
 ### Lista pacientes
 GET http://localhost:3000/api/pets
+?filter=
+&page=1
+&limit=5
+
+### Lista pacientes inactivos
+GET http://localhost:3000/api/pets/inactive
+
+### Pet por id
+GET http://localhost:3000/api/pets/1
