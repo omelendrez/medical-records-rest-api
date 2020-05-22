@@ -119,8 +119,7 @@ const getInactive = (req, res) => {
 module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
-  const Consultation = require('../models').consultation
-  Pet.hasMany(Consultation)
+
   return Pet
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -138,31 +137,7 @@ const getById = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('birthDate'), '%Y-%m-%d'), 'birthDate'],
         'observations',
         'statusId'
-      ],
-      order: [
-        [Consultation, sequelize.col('date'), 'DESC']
-      ],
-      include: [{
-        model: Consultation,
-        where: {
-          petId: sequelize.col('pet.id'),
-          statusId: 1
-        },
-        attributes: [
-          'id',
-          'petId',
-          [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
-          'clinicalExamination',
-          'diagnosis',
-          'treatment',
-          [sequelize.fn('date_format', sequelize.col('nextConsultation'), '%d-%b-%y'), 'nextConsultation'],
-          'observations',
-          'amount',
-          'paymentMethod',
-          'paid'
-        ],
-        required: false,
-      }]
+      ]
     })
     .then(pet => res
       .status(200)
