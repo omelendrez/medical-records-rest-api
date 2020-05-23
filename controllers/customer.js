@@ -180,6 +180,25 @@ const getDebtors = (req, res) => {
 }
 module.exports.getDebtors = getDebtors
 
+const getBalanceById = (req, res) => {
+
+  return Customer
+    .findOne({
+      tableHint: TableHints.NOLOCK,
+      where: {
+        id: req.params.id
+      },
+      attributes: ['id', 'name', 'balance']
+    })
+    .then(debt => {
+      res
+        .status(200)
+        .json({ success: true, debt })
+    })
+}
+
+module.exports.getBalanceById = getBalanceById
+
 const getById = (req, res) => {
   const Pet = require("../models").pet;
   Customer.hasMany(Pet)

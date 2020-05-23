@@ -29,7 +29,7 @@ const create = async (req, res) => {
             customerId: record.customerId
           },
           attributes: [
-            [sequelize.fn('sum', sequelize.literal('credit-debit')), 'debt']
+            [sequelize.fn('sum', sequelize.literal('debit-credit')), 'debt']
           ]
         })
         .then(account => {
@@ -68,7 +68,7 @@ const getAll = (req, res) => {
       },
       tableHint: TableHints.NOLOCK,
       attributes: [
-        [sequelize.fn('date_format', sequelize.col('date'), '%d-%b-%y'), 'date'],
+        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'credit',
         'debit'
       ]
