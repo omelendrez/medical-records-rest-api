@@ -1,0 +1,28 @@
+### Lista clientes
+GET http://localhost:3000/api/consultations
+?filter=
+&page=1
+&limit=500
+
+### Crear consulta
+POST http://localhost:3000/api/consultations
+content-type: application/json
+
+{
+  "customerId": 1,
+  "petId": 1,
+  "date": "2020-05-21",
+  "amount": "850",
+  "paymentMethod": "",
+  "paid": "0",
+  "anamnesis": "Decaida",
+  "clinicalExamination": "No presenta ninguna anomalía",
+  "diagnosis": "Falta de ejercicio",
+  "treatment": "Caminatas dos veces al día"
+}
+
+### Lista por cliente
+GET http://localhost:3000/api/consultations/by-pet/1
+
+### Lista visitas programadas
+GET http://localhost:3000/api/consultations/programmed-visits

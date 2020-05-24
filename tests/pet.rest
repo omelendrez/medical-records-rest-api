@@ -1,0 +1,25 @@
+### Crear paciente
+POST http://localhost:3000/api/pets
+content-type: application/json
+
+{
+    "id": 1,
+    "customerId": 1,
+    "name": "Batuta",
+    "type": "Fel",
+    "birthDate": "2020-02-03",
+    "breed": "Mzo",
+    "sex": "Me"
+}
+
+### Lista pacientes
+GET http://localhost:3000/api/pets
+?filter=
+&page=1
+&limit=5
+
+### Lista pacientes inactivos
+GET http://localhost:3000/api/pets/inactive
+
+### Pet por id
+GET http://localhost:3000/api/pets/1

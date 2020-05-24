@@ -1,0 +1,10 @@
+### Crear registro
+POST http://localhost:3000/api/status
+content-type: application/json
+
+{
+    "name": "Inactive"
+}
+
+### Listar status
+GET http://localhost:3000/api/status

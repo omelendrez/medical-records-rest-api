@@ -1,0 +1,35 @@
+### Lista vacunaciones
+GET http://localhost:3000/api/dewormings
+?filter=
+&page=1
+&limit=500
+
+### Crear vacunación
+POST http://localhost:3000/api/dewormings
+content-type: application/json
+
+{
+  "customerId": 1,
+  "petId": 1,
+  "date": "2020-06-07",
+  "nextAppointment": "2020-06-14",
+  "deworming": "Antiparasitario",
+  "amount": "900",
+  "paymentMethod": "",
+  "paid": "0"
+}
+
+### Modificar vacunación
+POST  http://localhost:3000/api/dewormings
+content-type: application/json
+
+{
+  "id": 1,
+  "deworming":"Antiparasitario para camellos"
+}
+
+### Lista de vacunaciones por paciente
+GET http://localhost:3000/api/dewormings/by-pet/1
+
+### Lista visitas programadas de vacunaciones
+GET http://localhost:3000/api/dewormings/programmed-visits

@@ -1,0 +1,13 @@
+### Crear registro
+POST http://localhost:3000/api/accounts
+content-type: application/json
+
+{
+    "customerId": 1,
+    "date": "2020-05-21",
+    "credit": 0,
+    "debit": 1500
+}
+
+### Lista los saldos
+GET http://localhost:3000/api/accounts/1

@@ -1,9 +1,3 @@
-module.exports.noProps = {
-  statusId: undefined,
-  createdAt: undefined,
-  updatedAt: undefined
-}
-
 module.exports.updateOrCreate = (model, where, newItem, beforeCreate) => {
   return new Promise((resolve, reject) => {
     model

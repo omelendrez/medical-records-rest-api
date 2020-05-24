@@ -1,14 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Consultation = sequelize.define('consultation', {
+  const Vaccination = sequelize.define('vaccination', {
     customerId: DataTypes.INTEGER,
     petId: DataTypes.INTEGER,
     date: DataTypes.DATE,
-    anamnesis: DataTypes.STRING(500),
-    clinicalExamination: DataTypes.STRING(500),
-    diagnosis: DataTypes.STRING(500),
-    treatment: DataTypes.STRING(500),
-    treatmentStage: DataTypes.STRING,
+    vaccination: DataTypes.STRING(500),
     nextAppointment: {
       type: DataTypes.DATE,
       defaultValue: null
@@ -30,12 +26,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 1
     }
   }, {});
-  Consultation.associate = function (models) {
+  Vaccination.associate = function (models) {
     // associations can be defined here
   };
-  Consultation.prototype.data = function () {
+  Vaccination.prototype.data = function () {
     let json = this.toJSON()
     return json
   }
-  return Consultation;
+  return Vaccination;
 };

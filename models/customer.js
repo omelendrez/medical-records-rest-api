@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(500),
       defaultValue: ''
     },
+    balance: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0
+    },
     statusId: {
       type: DataTypes.TINYINT,
       defaultValue: 1

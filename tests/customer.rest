@@ -1,0 +1,25 @@
+### Lista clientes
+GET http://localhost:3000/api/customers?filter=&page=&limit=500
+
+### Agregar registro
+POST http://localhost:3000/api/customers
+content-type: application/json
+
+{
+  "name": "Melendrez Omar",
+  "phone": "2915754922",
+  "address": "Alberdi 2678",
+  "email": "omar.melendrez@gmail.com"
+}
+
+### Ver deudores
+GET http://localhost:3000/api/customers/debtors
+
+### Ver un deudor
+GET http://localhost:3000/api/customers/debtors/1
+
+### Borrar registro
+DELETE http://localhost:3000/api/customers/6
+
+### Recuperar registro
+PUT http://localhost:3000/api/customers/1
