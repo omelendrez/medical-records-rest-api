@@ -60,6 +60,7 @@ CREATE TABLE `consultations` (
   `clinicalExamination` varchar(500) DEFAULT NULL,
   `diagnosis` varchar(500) DEFAULT NULL,
   `treatment` varchar(500) DEFAULT NULL,
+  `treatmentStage` varchar(255) DEFAULT NULL,
   `nextAppointment` datetime DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT '0.00',
   `paymentMethod` varchar(255) DEFAULT '',
@@ -77,7 +78,16 @@ CREATE TABLE `consultations` (
 
 LOCK TABLES `consultations` WRITE;
 /*!40000 ALTER TABLE `consultations` DISABLE KEYS */;
-INSERT INTO `consultations` VALUES (1,1,1,'2020-04-18 00:00:00','','','','Quintuple viratec y meltra susp.',NULL,0.00,'',0.00,1,'2020-05-24 18:32:12','2020-05-24 18:32:12'),(2,1,1,'2020-05-02 00:00:00','','','','meltra susp.',NULL,0.00,'',0.00,1,'2020-05-24 18:32:31','2020-05-24 18:32:31'),(3,1,1,'2020-05-11 00:00:00','','','','Quintuple viratec y desp en la casa con pastilla.',NULL,0.00,'',0.00,1,'2020-05-24 18:32:48','2020-05-24 18:32:48'),(4,2,2,'2020-05-06 00:00:00','sin vómitos','mf normal, t 38,2','Distensión abd','Quintuple viratec. ',NULL,0.00,'',0.00,1,'2020-05-24 18:35:33','2020-05-24 18:35:33'),(5,2,2,'2020-05-11 00:00:00','','','','Desp Meltra comp ⅜ para 3,5 kg.',NULL,0.00,'',0.00,1,'2020-05-24 18:35:58','2020-05-24 18:35:58'),(6,3,3,'2020-05-09 00:00:00','2 diarreas pastosa y luego liquida con sangre, vomito un pedazo de hueso','Examen s/p. ','','Sin vacunas, desp con gotas, . PE + Dexa + Gastrine + Hepaton. Dieta arroz y pollo.',NULL,0.00,'',0.00,1,'2020-05-24 18:38:12','2020-05-24 18:38:12'),(7,3,3,'2020-05-10 00:00:00','','','','Muy bien, no ha defecado. PE y desp con meltra comp para 20 kg. Dieta x tres días más. Control WA.',NULL,0.00,'',0.00,1,'2020-05-24 18:38:41','2020-05-24 18:38:41'),(8,4,4,'2020-05-09 00:00:00','','','','Quintuple y antirrabica mas meltra comp.',NULL,0.00,'',0.00,1,'2020-05-24 18:40:13','2020-05-24 18:40:13'),(9,4,5,'2020-05-09 00:00:00','','','','quintuple y antirrabica más meltra comp.',NULL,0.00,'',0.00,1,'2020-05-24 18:41:06','2020-05-24 18:41:06');
+INSERT INTO `consultations` VALUES
+(1,1,1,'2020-04-18 00:00:00','','','','Quintuple viratec y meltra susp.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:32:12','2020-05-24 18:32:12'),
+(2,1,1,'2020-05-02 00:00:00','','','','meltra susp.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:32:31','2020-05-24 18:32:31'),
+(3,1,1,'2020-05-11 00:00:00','','','','Quintuple viratec y desp en la casa con pastilla.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:32:48','2020-05-24 18:32:48'),
+(4,2,2,'2020-05-06 00:00:00','sin vómitos','mf normal, t 38,2','Distensión abd','Quintuple viratec. ',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:35:33','2020-05-24 18:35:33'),
+(5,2,2,'2020-05-11 00:00:00','','','','Desp Meltra comp ⅜ para 3,5 kg.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:35:58','2020-05-24 18:35:58'),
+(6,3,3,'2020-05-09 00:00:00','2 diarreas pastosa y luego liquida con sangre, vomito un pedazo de hueso','Examen s/p. ','','Sin vacunas, desp con gotas, . PE + Dexa + Gastrine + Hepaton. Dieta arroz y pollo.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:38:12','2020-05-24 18:38:12'),
+(7,3,3,'2020-05-10 00:00:00','','','','Muy bien, no ha defecado. PE y desp con meltra comp para 20 kg. Dieta x tres días más. Control WA.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:38:41','2020-05-24 18:38:41'),
+(8,4,4,'2020-05-09 00:00:00','','','','Quintuple y antirrabica mas meltra comp.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:40:13','2020-05-24 18:40:13'),
+(9,4,5,'2020-05-09 00:00:00','','','','quintuple y antirrabica más meltra comp.',NULL,NULL,0.00,'',0.00,1,'2020-05-24 18:41:06','2020-05-24 18:41:06');
 /*!40000 ALTER TABLE `consultations` ENABLE KEYS */;
 UNLOCK TABLES;
 
