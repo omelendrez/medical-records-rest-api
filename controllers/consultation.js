@@ -250,7 +250,12 @@ const getnextAppointments = (req, res) => {
 
   return Consultation
     .findAndCountAll({
-      where: [sequelize.where(sequelize.col('nextAppointment'), '>=', sequelize.fn('CURDATE'))],
+      where: {
+        [Op.and]: [
+          [sequelize.where(sequelize.col('nextAppointment'), '>=', sequelize.fn('CURDATE'))],
+          { statusId: ACTIVE }
+        ]
+      },
       attributes: [
         'id',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],

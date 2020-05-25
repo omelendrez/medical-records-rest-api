@@ -4,6 +4,12 @@ GET http://localhost:3000/api/vaccinations
 &page=1
 &limit=500
 
+### Lista vacunaciones inactivas
+GET http://localhost:3000/api/vaccinations/inactive
+?filter=
+&page=1
+&limit=500
+
 ### Crear vacunación
 POST http://localhost:3000/api/vaccinations
 content-type: application/json
@@ -35,3 +41,6 @@ GET http://localhost:3000/api/vaccinations/by-pet/1
 
 ### Lista visitas programadas de vacunaciones
 GET http://localhost:3000/api/vaccinations/programmed-visits
+
+### Recuperar registro
+PUT http://localhost:3000/api/vaccinations/1
