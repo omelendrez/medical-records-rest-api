@@ -123,10 +123,7 @@ const getInactive = (req, res) => {
       tableHint: TableHints.NOLOCK,
       where: {
         [Op.or]: [
-          { anamnesis: { [Op.like]: `%${filter}%` } },
-          { clinicalExamination: { [Op.like]: `%${filter}%` } },
-          { diagnosis: { [Op.like]: `%${filter}%` } },
-          { treatment: { [Op.like]: `%${filter}%` } },
+          { vaccination: { [Op.like]: `%${filter}%` } },
           sequelize.where(sequelize.literal('pet.name'), 'like', `%${filter}%`),
           sequelize.where(sequelize.literal('customer.name'), 'like', `%${filter}%`)
         ],
@@ -141,7 +138,7 @@ const getInactive = (req, res) => {
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
-        'diagnosis',
+        'vaccination',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         'amount',
         'paymentMethod',
