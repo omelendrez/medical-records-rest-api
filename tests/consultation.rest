@@ -1,5 +1,11 @@
-### Lista clientes
+### Lista consultas
 GET http://localhost:3000/api/consultations
+?filter=
+&page=1
+&limit=500
+
+### Lista consultas inactivas
+GET http://localhost:3000/api/consultations/inactive
 ?filter=
 &page=1
 &limit=500
