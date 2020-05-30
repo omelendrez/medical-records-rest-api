@@ -3,17 +3,14 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints;
 const Op = Sequelize.Op
 const sequelize = require("sequelize");
-const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
-const Account = require('./account')
+const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE, updateCustomerBalance } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id, date, amount, paid, paymentMethod } = req.body
+  const { id, date, amount } = req.body
 
   if (!id) {
-    if (amount.length === 0 || paid.length === 0) return ReE(res, { success: false, message: 'Los importes no pueden quedar vacíos' }, 422)
-    if (isNaN(amount) || isNaN(paid)) return ReE(res, { success: false, message: 'Los importes deben contener números' }, 422)
-    if (paid > 0 && !paymentMethod) return ReE(res, { success: false, message: 'Debe seleccionar el método de pago' }, 422)
-    if (paid === 0) req.body.paymentMethod = ''
+    if (amount.length === 0) return ReE(res, { success: false, message: 'Los importes no pueden quedar vacíos' }, 422)
+    if (isNaN(amount)) return ReE(res, { success: false, message: 'Los importes deben contener números' }, 422)
     if (!date) return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
   }
 
@@ -30,11 +27,9 @@ const create = async (req, res) => {
     req.body
   )
     .then(record => {
-      if (paid || amount) {
-        req.body.credit = paid
-        req.body.debit = amount
-        Account.create(req, res)
-      }
+
+      updateCustomerBalance(record.customerId)
+
       const resp = {
         message: 'Datos guardados satisfactoriamente',
         record
@@ -80,9 +75,7 @@ const getAll = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'vaccination',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']
@@ -140,9 +133,7 @@ const getInactive = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'vaccination',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']
@@ -180,9 +171,7 @@ const getById = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'vaccination',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid'
+        'amount'
       ]
     })
     .then(vaccination => res
@@ -214,9 +203,7 @@ const getByPet = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'vaccination',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']

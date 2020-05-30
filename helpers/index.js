@@ -49,3 +49,57 @@ module.exports.verifyDelete = (models, where) => {
 
 module.exports.ACTIVE = 1
 module.exports.INACTIVE = 11
+
+module.exports.updateCustomerBalance = async customerId => {
+  const sequelize = require('sequelize')
+  const Consultation = require('../models').consultation
+  const Vaccination = require('../models').vaccination
+  const Deworming = require('../models').deworming
+  const Account = require('../models').account
+  const Customer = require('../models').customer
+
+  const params = {
+    where: {
+      customerId
+    },
+    attributes:
+      [[sequelize.fn('sum', sequelize.col('amount')), 'total']]
+  }
+
+  let total = 0
+
+  let res = await Consultation.findAll(params)
+  total += res[0].toJSON().total
+
+  res = await Vaccination.findAll(params)
+  total += res[0].toJSON().total
+
+  res = await Deworming.findAll(params)
+  total += res[0].toJSON().total
+
+  res = await Account
+    .findAll({
+      tableHint: sequelize.TableHints.NOLOCK,
+      where: {
+        customerId
+      },
+      attributes: [
+        [sequelize.fn('sum', sequelize.literal('debit-credit')), 'total']
+      ]
+    })
+
+  total += res[0].toJSON().total
+
+  console.log(total)
+
+  Customer
+    .findOne({
+      tableHint: sequelize.TableHints.NOLOCK,
+      where: {
+        id: customerId
+      }
+    })
+    .then(customer => {
+      customer.update({ balance: total })
+    })
+}
