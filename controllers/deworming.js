@@ -75,9 +75,7 @@ const getAll = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'deworming',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']
@@ -135,9 +133,7 @@ const getInactive = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'deworming',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']
@@ -175,9 +171,7 @@ const getById = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'deworming',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid'
+        'amount'
       ]
     })
     .then(deworming => res
@@ -209,9 +203,7 @@ const getByPet = (req, res) => {
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'deworming',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount',
-        'paymentMethod',
-        'paid',
+        'amount'
       ],
       order: [
         ['date', 'DESC']

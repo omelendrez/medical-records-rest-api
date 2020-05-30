@@ -17,14 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0
     },
-    paymentMethod: {
-      type: DataTypes.STRING,
-      defaultValue: ''
-    },
-    paid: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0
-    },
     statusId: {
       type: DataTypes.TINYINT,
       defaultValue: 1
