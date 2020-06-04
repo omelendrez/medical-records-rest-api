@@ -75,6 +75,7 @@ const getAll = (req, res) => {
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
+        'treatmentStage',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         'amount'
       ],
@@ -136,6 +137,7 @@ const getInactive = (req, res) => {
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'diagnosis',
+        'treatmentStage',
         [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         'amount'
       ],
