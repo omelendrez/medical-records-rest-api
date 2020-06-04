@@ -61,6 +61,7 @@ const getAll = (req, res) => {
       distinct: true,
       offset,
       limit,
+      order: [['id', 'DESC']],
       attributes: [
         'id',
         'name',
