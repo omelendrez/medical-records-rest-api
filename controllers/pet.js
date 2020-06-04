@@ -55,6 +55,7 @@ const getAll = (req, res) => {
       },
       offset,
       limit,
+      order: [['id', 'DESC']],
       attributes: [
         'id',
         'customerId',
