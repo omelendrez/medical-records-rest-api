@@ -256,10 +256,10 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(deworming =>
-      deworming.update({ statusId: INACTIVE })
+      deworming.destroy()
         .then(deworming => {
           const resp = {
-            message: `Vacunación eliminada`,
+            message: `Desparasitación eliminada`,
             deworming
           }
           return ReS(res, resp, 200)
@@ -269,6 +269,28 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar la desparasitación'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const deactivateRecord = (req, res) => {
+  return Deworming
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(deworming =>
+      deworming.update({ statusId: INACTIVE })
+        .then(deworming => {
+          const resp = {
+            message: `Desparasitación desactivada`,
+            deworming
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la desparasitación'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la desparasitación'))
+}
+module.exports.deactivateRecord = deactivateRecord
 
 const restoreRecord = (req, res) => {
   return Deworming
@@ -281,7 +303,7 @@ const restoreRecord = (req, res) => {
       deworming.update({ statusId: ACTIVE })
         .then(deworming => {
           const resp = {
-            message: `Vacunación restaurada`,
+            message: `Desparasitación restaurada`,
             deworming
           }
           return ReS(res, resp, 200)

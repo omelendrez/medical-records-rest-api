@@ -10,6 +10,7 @@ router.get('/by-pet/:id', Consultation.getByPet)
 router.get('/:id', Consultation.getById)
 router.post('/', Consultation.create)
 router.delete('/:id', Consultation.deleteRecord)
-router.put('/:id', Consultation.restoreRecord)
+router.put('/:id', Consultation.deactivateRecord)
+router.put('/:id/restore', Consultation.restoreRecord)
 
 module.exports = router

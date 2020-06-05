@@ -10,6 +10,7 @@ router.get('/by-pet/:id', Vaccination.getByPet)
 router.get('/:id', Vaccination.getById)
 router.post('/', Vaccination.create)
 router.delete('/:id', Vaccination.deleteRecord)
-router.put('/:id', Vaccination.restoreRecord)
+router.put('/:id', Vaccination.deactivateRecord)
+router.put('/:id/restore', Vaccination.restoreRecord)
 
 module.exports = router

@@ -155,8 +155,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(pet =>
-      //pet.destroy()
-      pet.update({ statusId: INACTIVE })
+      pet.destroy()
         .then(pet => {
           const resp = {
             message: `Paciente "${pet.name}" eliminado`,
@@ -170,6 +169,29 @@ const deleteRecord = (req, res) => {
 }
 module.exports.deleteRecord = deleteRecord
 
+const deactivateRecord = (req, res) => {
+  return Pet
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(pet =>
+      //pet.destroy()
+      pet.update({ statusId: INACTIVE })
+        .then(pet => {
+          const resp = {
+            message: `Paciente "${pet.name}" desactivado`,
+            pet
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el paciente'))
+}
+module.exports.deactivateRecord = deactivateRecord
+
 const restoreRecord = (req, res) => {
   return Pet
     .findOne({
@@ -182,7 +204,7 @@ const restoreRecord = (req, res) => {
       pet.update({ statusId: ACTIVE })
         .then(pet => {
           const resp = {
-            message: `Paciente "${pet.name}" restaurado`,
+            message: `Paciente "${pet.name}" reactivado`,
             pet
           }
           return ReS(res, resp, 200)

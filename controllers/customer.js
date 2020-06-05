@@ -243,8 +243,7 @@ const deleteRecord = (req, res) => {
       }
     })
     .then(customer =>
-      //      customer.destroy()
-      customer.update({ statusId: INACTIVE })
+      customer.destroy()
         .then(customer => {
           Pet
             .findAll({ where: { customerId: req.params.id } })
@@ -260,6 +259,33 @@ const deleteRecord = (req, res) => {
     .catch(() => ReE(res, 'Error ocurrido intentando eliminar el cliente'))
 }
 module.exports.deleteRecord = deleteRecord
+
+const deactivateRecord = (req, res) => {
+  const Pet = require('../models').pet
+  return Customer
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(customer =>
+      //      customer.destroy()
+      customer.update({ statusId: INACTIVE })
+        .then(customer => {
+          Pet
+            .findAll({ where: { customerId: req.params.id } })
+            .then(pets => pets.map(pet => pet.update({ statusId: INACTIVE })))
+          const resp = {
+            message: `Cliente "${customer.name}" desactivado`,
+            customer
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar el cliente'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar el cliente'))
+}
+module.exports.deactivateRecord = deactivateRecord
 
 const restoreRecord = (req, res) => {
   const Pet = require('../models').pet

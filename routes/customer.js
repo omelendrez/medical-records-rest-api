@@ -10,6 +10,7 @@ router.get('/debtors/:id', Customer.getBalanceById)
 router.get('/:id', Customer.getById)
 router.post('/', Customer.create)
 router.delete('/:id', Customer.deleteRecord)
-router.put('/:id', Customer.restoreRecord)
+router.put('/:id', Customer.deactivateRecord)
+router.put('/:id/restore', Customer.restoreRecord)
 
 module.exports = router

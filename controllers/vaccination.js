@@ -270,6 +270,28 @@ const deleteRecord = (req, res) => {
 }
 module.exports.deleteRecord = deleteRecord
 
+const deactivateRecord = (req, res) => {
+  return Vaccination
+    .findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+    .then(vaccination =>
+      vaccination.update({ statusId: INACTIVE })
+        .then(vaccination => {
+          const resp = {
+            message: `Vacunación desactivada`,
+            vaccination
+          }
+          return ReS(res, resp, 200)
+        })
+        .catch(() => ReE(res, 'Error ocurrido intentando eliminar la vacunación'))
+    )
+    .catch(() => ReE(res, 'Error ocurrido intentando eliminar la vacunación'))
+}
+module.exports.deactivateRecord = deactivateRecord
+
 const restoreRecord = (req, res) => {
   return Vaccination
     .findOne({
