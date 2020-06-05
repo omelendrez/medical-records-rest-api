@@ -8,6 +8,7 @@ router.get('/inactive', Pet.getInactive)
 router.get('/:id', Pet.getById)
 router.post('/', Pet.create)
 router.delete('/:id', Pet.deleteRecord)
-router.put('/:id', Pet.restoreRecord)
+router.put('/:id', Pet.deactivateRecord)
+router.put('/:id/restore', Pet.restoreRecord)
 
 module.exports = router
