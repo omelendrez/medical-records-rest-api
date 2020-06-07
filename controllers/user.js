@@ -8,6 +8,12 @@ const { ReS, ReE, updateOrCreate } = require('../helpers')
 const create = async (req, res) => {
   const { id, name, password } = req.body
 
+  const user = await User.findOne({ where: { name } })
+
+  if (user) {
+    return ReE(res, { success: false, message: 'Ya existe un usuario con ese nombre' }, 422)
+  }
+
   if (!name || (!password)) {
     return ReE(res, { success: false, message: 'Usuario y Password son campos obligatorios' }, 422)
   }
