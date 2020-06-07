@@ -1,0 +1,21 @@
+### Crear registro
+POST http://localhost:3000/api/users
+content-type: application/json
+
+{
+    "id": 2,
+    "name": "angiex",
+    "password": "papira2"
+}
+
+### Lista los saldos
+GET http://localhost:3000/api/users
+
+### Login
+POST http://localhost:3000/api/users/login
+content-type: application/json
+
+{
+    "name": "angiex",
+    "password": "papira2"
+}
