@@ -1,8 +1,8 @@
 const Account = require('../models').account
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize");
+const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, updateCustomerBalance } = require('../helpers')
 
 const create = async (req, res) => {

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = (sequelize, DataTypes) => {
   const Deworming = sequelize.define('deworming', {
     customerId: DataTypes.INTEGER,
@@ -16,14 +16,15 @@ module.exports = (sequelize, DataTypes) => {
     statusId: {
       type: DataTypes.TINYINT,
       defaultValue: 1
-    }
-  }, {});
+    },
+    userId: DataTypes.INTEGER
+  }, {})
   Deworming.associate = function (models) {
     // associations can be defined here
-  };
+  }
   Deworming.prototype.data = function () {
     let json = this.toJSON()
     return json
   }
-  return Deworming;
-};
+  return Deworming
+}

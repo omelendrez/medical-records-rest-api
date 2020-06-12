@@ -1,8 +1,8 @@
 const Customer = require('../models').customer
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize");
+const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
@@ -39,7 +39,10 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
-  const Pet = require("../models").pet;
+  const User = require("../models").user
+  Customer.belongsTo(User)
+
+  const Pet = require("../models").pet
   Customer.hasMany(Pet)
 
   const filter = req.query.filter || ''
@@ -69,15 +72,20 @@ const getAll = (req, res) => {
         'phone',
         'email',
         'observations',
-        'balance'
+        'balance',
+        'updatedAt'
       ],
-      include: {
+      include: [{
         model: Pet,
         attributes: [
           'id', 'name', 'statusId'
         ],
         required: false
-      }
+      }, {
+        model: User,
+        attributes: ['name'],
+        required: false
+      }]
     })
     .then(customers => res
       .status(200)
@@ -87,6 +95,9 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
+  const User = require('../models').user
+  Customer.belongsTo(User)
+
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -112,8 +123,14 @@ const getInactive = (req, res) => {
         'phone',
         'email',
         'observations',
+        [sequelize.col('user.name'), 'userName'],
         'updatedAt'
       ],
+      include: {
+        model: User,
+        attributes: [],
+        required: false
+      }
     })
     .then(customers => res
       .status(200)
@@ -128,7 +145,6 @@ const getDebtors = (req, res) => {
   const Status = require('../models').status
 
   Customer.hasMany(Pet)
-
   Customer.belongsTo(Status)
   Status.hasMany(Customer)
 
@@ -201,7 +217,7 @@ const getBalanceById = (req, res) => {
 module.exports.getBalanceById = getBalanceById
 
 const getById = (req, res) => {
-  const Pet = require("../models").pet;
+  const Pet = require("../models").pet
   Customer.hasMany(Pet)
 
   return Customer

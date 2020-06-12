@@ -1,8 +1,8 @@
 const Deworming = require('../models').deworming
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize");
+const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE, updateCustomerBalance } = require('../helpers')
 
 const create = async (req, res) => {
@@ -42,10 +42,13 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const Pet = require("../models").pet
-  Deworming.belongsTo(Pet);
+  Deworming.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Deworming.belongsTo(Customer)
+
+  const User = require("../models").user
+  Deworming.belongsTo(User)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -72,10 +75,11 @@ const getAll = (req, res) => {
         'petId',
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('pet.name'), 'petName'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'deworming',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName']
       ],
       order: [
         ['date', 'DESC']
@@ -88,6 +92,11 @@ const getAll = (req, res) => {
         {
           model: Customer,
           attributes: []
+        },
+        {
+          model: User,
+          attributes: [],
+          required: false
         }
       ]
     })
@@ -99,8 +108,11 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
+  const User = require("../models").user
+  Deworming.belongsTo(User)
+
   const Pet = require("../models").pet
-  Deworming.belongsTo(Pet);
+  Deworming.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Deworming.belongsTo(Customer)
@@ -130,10 +142,12 @@ const getInactive = (req, res) => {
         'petId',
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('pet.name'), 'petName'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'deworming',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']
@@ -146,6 +160,11 @@ const getInactive = (req, res) => {
         {
           model: Customer,
           attributes: []
+        },
+        {
+          model: User,
+          attributes: [],
+          required: false
         }
       ]
     })
@@ -183,6 +202,8 @@ module.exports.getById = getById
 
 
 const getByPet = (req, res) => {
+  const User = require('../models').user
+  Deworming.belongsTo(User)
 
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -200,14 +221,21 @@ const getByPet = (req, res) => {
       limit,
       attributes: [
         'id',
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'deworming',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']
-      ]
+      ],
+      include: {
+        model: User,
+        attributes: [],
+        required: false
+      }
     })
     .then(dewormings => res
       .status(200)
@@ -218,7 +246,7 @@ module.exports.getByPet = getByPet
 
 const getnextAppointments = (req, res) => {
   const Pet = require("../models").pet
-  Deworming.belongsTo(Pet);
+  Deworming.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Deworming.belongsTo(Customer)
@@ -228,7 +256,7 @@ const getnextAppointments = (req, res) => {
       where: [sequelize.where(sequelize.col('nextAppointment'), '>=', sequelize.fn('CURDATE'))],
       attributes: [
         'id',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
+        'nextAppointment',
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
         'customerId',

@@ -1,8 +1,8 @@
 const Consultation = require('../models').consultation
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize");
+const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE, updateCustomerBalance } = require('../helpers')
 
 const create = async (req, res) => {
@@ -39,8 +39,11 @@ const create = async (req, res) => {
 module.exports.create = create
 
 const getAll = (req, res) => {
+  const User = require("../models").user
+  Consultation.belongsTo(User)
+
   const Pet = require("../models").pet
-  Consultation.belongsTo(Pet);
+  Consultation.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Consultation.belongsTo(Customer)
@@ -73,11 +76,13 @@ const getAll = (req, res) => {
         'petId',
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('pet.name'), 'petName'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'diagnosis',
         'treatmentStage',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']
@@ -90,6 +95,11 @@ const getAll = (req, res) => {
         {
           model: Customer,
           attributes: []
+        },
+        {
+          model: User,
+          attributes: [],
+          required: false
         }
       ]
     })
@@ -101,8 +111,11 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
+  const User = require("../models").user
+  Consultation.belongsTo(User)
+
   const Pet = require("../models").pet
-  Consultation.belongsTo(Pet);
+  Consultation.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Consultation.belongsTo(Customer)
@@ -135,11 +148,13 @@ const getInactive = (req, res) => {
         'petId',
         [sequelize.col('customer.name'), 'customerName'],
         [sequelize.col('pet.name'), 'petName'],
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'diagnosis',
         'treatmentStage',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']
@@ -152,6 +167,11 @@ const getInactive = (req, res) => {
         {
           model: Customer,
           attributes: []
+        },
+        {
+          model: User,
+          attributes: [],
+          required: false
         }
       ]
     })
@@ -164,6 +184,7 @@ const getInactive = (req, res) => {
 module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
+
   return Consultation
     .findOne({
       tableHint: TableHints.NOLOCK,
@@ -174,13 +195,13 @@ const getById = (req, res) => {
         'id',
         'customerId',
         'petId',
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'anamnesis',
         'clinicalExamination',
         'diagnosis',
         'treatment',
         'treatmentStage',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
+        'nextAppointment',
         'amount'
       ]
     })
@@ -193,6 +214,9 @@ module.exports.getById = getById
 
 
 const getByPet = (req, res) => {
+
+  const User = require('../models').user
+  Consultation.belongsTo(User)
 
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -210,18 +234,25 @@ const getByPet = (req, res) => {
       limit,
       attributes: [
         'id',
-        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
+        'date',
         'anamnesis',
         'clinicalExamination',
         'diagnosis',
         'treatment',
         'treatmentStage',
-        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
-        'amount'
+        'nextAppointment',
+        'amount',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']
-      ]
+      ],
+      include: {
+        model: User,
+        attributes: [],
+        required: false
+      }
     })
     .then(consultations => res
       .status(200)
@@ -232,7 +263,7 @@ module.exports.getByPet = getByPet
 
 const getnextAppointments = (req, res) => {
   const Pet = require("../models").pet
-  Consultation.belongsTo(Pet);
+  Consultation.belongsTo(Pet)
 
   const Customer = require("../models").customer
   Consultation.belongsTo(Customer)

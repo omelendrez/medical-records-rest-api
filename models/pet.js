@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = (sequelize, DataTypes) => {
   const Pet = sequelize.define('pet', {
     customerId: DataTypes.INTEGER,
@@ -37,17 +37,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(500),
       defaultValue: ''
     },
-    statusId: {
-      type: DataTypes.TINYINT,
-      defaultValue: 1
-    }
-  }, {});
+    userId: DataTypes.INTEGER
+  }, {})
   Pet.associate = function (models) {
     // associations can be defined here
-  };
+  }
   Pet.prototype.data = function () {
     let json = this.toJSON()
     return json
   }
-  return Pet;
-};
+  return Pet
+}
