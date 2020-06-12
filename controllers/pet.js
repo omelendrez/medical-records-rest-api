@@ -1,8 +1,8 @@
 const Pet = require('../models').pet
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize");
+const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
@@ -33,9 +33,11 @@ module.exports.create = create
 
 const getAll = (req, res) => {
   const Customer = require('../models').customer
+  const User = require('../models').user
 
   Customer.hasMany(Pet)
   Pet.belongsTo(Customer)
+  Pet.belongsTo(User)
 
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
@@ -66,12 +68,18 @@ const getAll = (req, res) => {
         'weight',
         'birthDate',
         'observations',
-        [sequelize.col('customer.name'), 'customerName']
+        [sequelize.col('customer.name'), 'customerName'],
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
-      include: {
+      include: [{
         model: Customer,
         attributes: []
-      }
+      }, {
+        model: User,
+        attributes: [],
+        required: false
+      }]
     })
     .then(pets => res
       .status(200)
@@ -81,6 +89,9 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
+  const User = require('../models').user
+  Pet.belongsTo(User)
+
   const filter = req.query.filter || ''
   const limit = parseInt(req.query.limit || 10)
   const page = parseInt(req.query.page || 1)
@@ -107,10 +118,15 @@ const getInactive = (req, res) => {
         'type',
         'breed',
         'sex',
-        'weight',
-        'birthDate',
-        'observations'
-      ]
+        'observations',
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
+      ],
+      include: {
+        model: User,
+        attributes: [],
+        required: false
+      }
     })
     .then(pets => res
       .status(200)
