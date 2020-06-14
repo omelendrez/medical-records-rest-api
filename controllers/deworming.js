@@ -79,7 +79,8 @@ const getAll = (req, res) => {
         'deworming',
         'nextAppointment',
         'amount',
-        [sequelize.col('user.name'), 'userName']
+        [sequelize.col('user.name'), 'userName'],
+        'updatedAt'
       ],
       order: [
         ['date', 'DESC']

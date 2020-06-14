@@ -90,8 +90,6 @@ module.exports.updateCustomerBalance = async customerId => {
 
   total += res[0].toJSON().total
 
-  console.log(total)
-
   Customer
     .findOne({
       tableHint: sequelize.TableHints.NOLOCK,
