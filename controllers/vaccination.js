@@ -148,7 +148,7 @@ const getInactive = (req, res) => {
         'nextAppointment',
         'amount',
         [sequelize.col('user.name'), 'userName'],
-        'udpatedAt'
+        [sequelize.col('vaccination.updatedAt'), 'updatedAt']
       ],
       order: [
         ['date', 'DESC']
