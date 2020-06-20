@@ -195,13 +195,13 @@ const getById = (req, res) => {
         'id',
         'customerId',
         'petId',
-        'date',
+        [sequelize.fn('date_format', sequelize.col('date'), '%Y-%m-%d'), 'date'],
         'anamnesis',
         'clinicalExamination',
         'diagnosis',
         'treatment',
         'treatmentStage',
-        'nextAppointment',
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         'amount'
       ]
     })
