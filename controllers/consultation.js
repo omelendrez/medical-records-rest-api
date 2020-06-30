@@ -265,6 +265,16 @@ const getnextAppointments = (req, res) => {
   const Pet = require("../models").pet
   Consultation.belongsTo(Pet)
 
+  /**
+   * SELECT co.id, co.nextAppointment, cu.name
+      FROM vmr.consultations as co
+      inner join vmr.customers cu on cu.id = co.customerId
+      WHERE co.nextAppointment is not null
+      and date_format(co.nextAppointment, '%Y-%m-%d') > date_format((select max(co.date) from consultations as co2 where co2.customerId = co.customerId), '%Y-%m-%d')
+      and date_format(co.nextAppointment, '%Y-%m-%d') >= date_format(now(), '%Y-%m-%d')
+      order by co.nextAppointment;
+   */
+
   const Customer = require("../models").customer
   Consultation.belongsTo(Customer)
 
