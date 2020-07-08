@@ -5,8 +5,10 @@
     "logging": false,
     "dialectOptions": {
       "decimalNumbers": true,
-      "useUTC": true,
-      "dateStrings": true
+      "useUTC": false,
+      "dateStrings": true,
+      "typeCast": true,
+      "timezone": "-03:00"
     }
   },
   "production": {
@@ -15,8 +17,10 @@
     "logging": false,
     "dialectOptions": {
       "decimalNumbers": true,
-      "useUTC": true,
-      "dateStrings": true
+      "useUTC": false,
+      "dateStrings": true,
+      "typeCast": true,
+      "timezone": "-03:00"
     }
   }
 }
