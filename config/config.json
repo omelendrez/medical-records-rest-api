@@ -4,7 +4,9 @@
     "dialect": "mysql",
     "logging": false,
     "dialectOptions": {
-      "decimalNumbers": true
+      "decimalNumbers": true,
+      "useUTC": true,
+      "dateStrings": true
     }
   },
   "production": {
@@ -12,7 +14,9 @@
     "dialect": "mysql",
     "logging": false,
     "dialectOptions": {
-      "decimalNumbers": true
+      "decimalNumbers": true,
+      "useUTC": true,
+      "dateStrings": true
     }
   }
 }
