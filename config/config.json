@@ -4,23 +4,17 @@
     "dialect": "mysql",
     "logging": false,
     "dialectOptions": {
-      "decimalNumbers": true,
-      "useUTC": false,
-      "dateStrings": true,
-      "typeCast": true,
-      "timezone": "-03:00"
-    }
+      "decimalNumbers": true
+    },
+    "timezone": "+04:00"
   },
   "production": {
     "use_env_variable": "CLEARDB_DATABASE_URL",
     "dialect": "mysql",
     "logging": false,
     "dialectOptions": {
-      "decimalNumbers": true,
-      "useUTC": false,
-      "dateStrings": true,
-      "typeCast": true,
-      "timezone": "-03:00"
-    }
+      "decimalNumbers": true
+    },
+    "timezone": "+04:00"
   }
 }
