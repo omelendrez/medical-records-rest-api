@@ -256,7 +256,7 @@ const getnextAppointments = (req, res) => {
       where: [sequelize.where(sequelize.col('nextAppointment'), '>=', sequelize.fn('CURDATE'))],
       attributes: [
         'id',
-        'nextAppointment',
+        [sequelize.fn('date_format', sequelize.col('nextAppointment'), '%Y-%m-%d'), 'nextAppointment'],
         [sequelize.col('pet.name'), 'petName'],
         [sequelize.col('customer.name'), 'customerName'],
         'customerId',
