@@ -3,9 +3,8 @@ POST http://localhost:3000/api/users
 content-type: application/json
 
 {
-    "id": 2,
-    "name": "angiex",
-    "password": "papira2"
+    "name": "visitante",
+    "password": "695379"
 }
 
 ### Lista los saldos
