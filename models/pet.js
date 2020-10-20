@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(500),
       defaultValue: ''
     },
+    statusId: {
+      type: DataTypes.TINYINT,
+      defaultValue: 1
+    },
     userId: DataTypes.INTEGER
   }, {})
   Pet.associate = function (models) {
