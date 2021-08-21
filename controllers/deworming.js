@@ -279,7 +279,7 @@ const getnextAppointments = (req, res) => {
       sequelize.where(
         sequelize.col("nextAppointment"),
         ">=",
-        sequelize.literal("DATE_ADD(CURDATE(), INTERVAL -1 DAY)")
+        sequelize.literal("CURDATE()")
       ),
     ],
     attributes: [
