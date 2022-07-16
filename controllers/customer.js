@@ -6,7 +6,8 @@ const sequelize = require("sequelize")
 const { ReS, ReE, updateOrCreate, ACTIVE, INACTIVE } = require('../helpers')
 
 const create = async (req, res) => {
-  const { id, name, phone } = req.body
+  const { id } = req.params
+  const { name, phone } = req.body
 
   if (!name || !phone) {
     return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
@@ -198,12 +199,12 @@ const getDebtors = (req, res) => {
 module.exports.getDebtors = getDebtors
 
 const getBalanceById = (req, res) => {
-
+  const { id } = req.params
   return Customer
     .findOne({
       tableHint: TableHints.NOLOCK,
       where: {
-        id: req.params.id
+        id
       },
       attributes: ['id', 'name', 'balance']
     })
@@ -217,6 +218,7 @@ const getBalanceById = (req, res) => {
 module.exports.getBalanceById = getBalanceById
 
 const getById = (req, res) => {
+  const { id } = req.params
   const Pet = require("../models").pet
   Customer.hasMany(Pet)
 
@@ -224,7 +226,7 @@ const getById = (req, res) => {
     .findOne({
       tableHint: TableHints.NOLOCK,
       where: {
-        id: req.params.id
+        id
       },
       attributes: [
         'id',
@@ -251,11 +253,12 @@ const getById = (req, res) => {
 module.exports.getById = getById
 
 const deleteRecord = (req, res) => {
+  const { id } = req.params
   const Pet = require('../models').pet
   return Customer
     .findOne({
       where: {
-        id: req.params.id
+        id
       }
     })
     .then(customer =>
@@ -277,11 +280,12 @@ const deleteRecord = (req, res) => {
 module.exports.deleteRecord = deleteRecord
 
 const deactivateRecord = (req, res) => {
+  const { id } = req.params
   const Pet = require('../models').pet
   return Customer
     .findOne({
       where: {
-        id: req.params.id
+        id
       }
     })
     .then(customer =>
@@ -304,11 +308,12 @@ const deactivateRecord = (req, res) => {
 module.exports.deactivateRecord = deactivateRecord
 
 const restoreRecord = (req, res) => {
+  const { id } = req.params
   const Pet = require('../models').pet
   return Customer
     .findOne({
       where: {
-        id: req.params.id
+        id
       }
     })
     .then(customer =>
@@ -316,7 +321,7 @@ const restoreRecord = (req, res) => {
       customer.update({ statusId: ACTIVE })
         .then(customer => {
           Pet
-            .findAll({ where: { customerId: req.params.id } })
+            .findAll({ where: { customerId: id } })
             .then(pets => pets.map(pet => pet.update({ statusId: ACTIVE })))
           const resp = {
             message: `Cliente "${customer.name}" restaurado`,

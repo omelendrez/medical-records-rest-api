@@ -1,8 +1,8 @@
-const Vaccination = require("../models").vaccination;
-const Sequelize = require("sequelize");
-const TableHints = Sequelize.TableHints;
-const Op = Sequelize.Op;
-const sequelize = require("sequelize");
+const Vaccination = require("../models").vaccination
+const Sequelize = require("sequelize")
+const TableHints = Sequelize.TableHints
+const Op = Sequelize.Op
+const sequelize = require("sequelize")
 const {
   ReS,
   ReE,
@@ -10,10 +10,11 @@ const {
   ACTIVE,
   INACTIVE,
   updateCustomerBalance,
-} = require("../helpers");
+} = require("../helpers")
 
 const create = async (req, res) => {
-  const { id, date, amount } = req.body;
+  const { id } = req.params
+  const { date, amount } = req.body
 
   if (!id) {
     if (amount.length === 0)
@@ -21,13 +22,13 @@ const create = async (req, res) => {
         res,
         { success: false, message: "Los importes no pueden quedar vacíos" },
         422
-      );
+      )
     if (isNaN(amount))
       return ReE(
         res,
         { success: false, message: "Los importes deben contener números" },
         422
-      );
+      )
     if (!date)
       return ReE(
         res,
@@ -37,11 +38,11 @@ const create = async (req, res) => {
             "Faltan datos. Complete los datos faltantes y vuelva a intentar",
         },
         422
-      );
+      )
   }
 
   if (!req.body.nextAppointment) {
-    delete req.body.nextAppointment;
+    delete req.body.nextAppointment
   }
 
   await updateOrCreate(
@@ -54,33 +55,33 @@ const create = async (req, res) => {
     req.body
   )
     .then((record) => {
-      updateCustomerBalance(record.customerId);
+      updateCustomerBalance(record.customerId)
 
       const resp = {
         message: "Datos guardados satisfactoriamente",
         record,
-      };
-      return ReS(res, resp, 201);
+      }
+      return ReS(res, resp, 201)
     })
-    .catch((err) => ReE(res, err, 422));
-};
-module.exports.create = create;
+    .catch((err) => ReE(res, err, 422))
+}
+module.exports.create = create
 
 const getAll = (req, res) => {
-  const Pet = require("../models").pet;
-  Vaccination.belongsTo(Pet);
+  const Pet = require("../models").pet
+  Vaccination.belongsTo(Pet)
 
-  const Customer = require("../models").customer;
-  Vaccination.belongsTo(Customer);
+  const Customer = require("../models").customer
+  Vaccination.belongsTo(Customer)
 
-  const User = require("../models").user;
-  Vaccination.belongsTo(User);
+  const User = require("../models").user
+  Vaccination.belongsTo(User)
 
-  const filter = req.query.filter || "";
-  const limit = parseInt(req.query.limit || 10);
-  const page = parseInt(req.query.page || 1);
+  const filter = req.query.filter || ""
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
 
-  const offset = limit * (page - 1);
+  const offset = limit * (page - 1)
 
   return Vaccination.findAndCountAll({
     tableHint: TableHints.NOLOCK,
@@ -138,25 +139,25 @@ const getAll = (req, res) => {
     .then((vaccinations) =>
       res.status(200).json({ success: true, vaccinations })
     )
-    .catch((err) => ReE(res, err, 422));
-};
-module.exports.getAll = getAll;
+    .catch((err) => ReE(res, err, 422))
+}
+module.exports.getAll = getAll
 
 const getInactive = (req, res) => {
-  const Pet = require("../models").pet;
-  Vaccination.belongsTo(Pet);
+  const Pet = require("../models").pet
+  Vaccination.belongsTo(Pet)
 
-  const Customer = require("../models").customer;
-  Vaccination.belongsTo(Customer);
+  const Customer = require("../models").customer
+  Vaccination.belongsTo(Customer)
 
-  const User = require("../models").user;
-  Vaccination.belongsTo(User);
+  const User = require("../models").user
+  Vaccination.belongsTo(User)
 
-  const filter = req.query.filter || "";
-  const limit = parseInt(req.query.limit || 10);
-  const page = parseInt(req.query.page || 1);
+  const filter = req.query.filter || ""
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
 
-  const offset = limit * (page - 1);
+  const offset = limit * (page - 1)
 
   return Vaccination.findAndCountAll({
     tableHint: TableHints.NOLOCK,
@@ -207,16 +208,17 @@ const getInactive = (req, res) => {
     .then((vaccinations) =>
       res.status(200).json({ success: true, vaccinations })
     )
-    .catch((err) => ReE(res, err, 422));
-};
+    .catch((err) => ReE(res, err, 422))
+}
 
-module.exports.getInactive = getInactive;
+module.exports.getInactive = getInactive
 
 const getById = (req, res) => {
+  const { id } = req.params
   return Vaccination.findOne({
     tableHint: TableHints.NOLOCK,
     where: {
-      id: req.params.id,
+      id
     },
     attributes: [
       "id",
@@ -236,24 +238,25 @@ const getById = (req, res) => {
     ],
   })
     .then((vaccination) => res.status(200).json({ success: true, vaccination }))
-    .catch((err) => ReE(res, err, 422));
-};
-module.exports.getById = getById;
+    .catch((err) => ReE(res, err, 422))
+}
+module.exports.getById = getById
 
 const getByPet = (req, res) => {
-  const User = require("../models").user;
-  Vaccination.belongsTo(User);
+  const { id } = req.params
+  const User = require("../models").user
+  Vaccination.belongsTo(User)
 
-  const limit = parseInt(req.query.limit || 10);
-  const page = parseInt(req.query.page || 1);
+  const limit = parseInt(req.query.limit || 10)
+  const page = parseInt(req.query.page || 1)
 
-  const offset = limit * (page - 1);
+  const offset = limit * (page - 1)
 
   return Vaccination.findAndCountAll({
     tableHint: TableHints.NOLOCK,
     where: {
       statusId: ACTIVE,
-      petId: req.params.id,
+      petId
     },
     offset,
     limit,
@@ -275,16 +278,16 @@ const getByPet = (req, res) => {
     .then((vaccinations) =>
       res.status(200).json({ success: true, vaccinations })
     )
-    .catch((err) => ReE(res, err, 422));
-};
-module.exports.getByPet = getByPet;
+    .catch((err) => ReE(res, err, 422))
+}
+module.exports.getByPet = getByPet
 
 const getnextAppointments = (req, res) => {
-  const Pet = require("../models").pet;
-  Vaccination.belongsTo(Pet);
+  const Pet = require("../models").pet
+  Vaccination.belongsTo(Pet)
 
-  const Customer = require("../models").customer;
-  Vaccination.belongsTo(Customer);
+  const Customer = require("../models").customer
+  Vaccination.belongsTo(Customer)
 
   return Vaccination.findAndCountAll({
     where: [
@@ -319,15 +322,16 @@ const getnextAppointments = (req, res) => {
     .then((vaccinations) =>
       res.status(200).json({ success: true, vaccinations })
     )
-    .catch((err) => ReE(res, err, 422));
-};
+    .catch((err) => ReE(res, err, 422))
+}
 
-module.exports.getnextAppointments = getnextAppointments;
+module.exports.getnextAppointments = getnextAppointments
 
 const deleteRecord = (req, res) => {
+  const { id } = req.params
   return Vaccination.findOne({
     where: {
-      id: req.params.id,
+      id
     },
   })
     .then((vaccination) =>
@@ -337,21 +341,22 @@ const deleteRecord = (req, res) => {
           const resp = {
             message: `Vacunación eliminada`,
             vaccination,
-          };
-          return ReS(res, resp, 200);
+          }
+          return ReS(res, resp, 200)
         })
         .catch(() =>
           ReE(res, "Error ocurrido intentando eliminar la vacunación")
         )
     )
-    .catch(() => ReE(res, "Error ocurrido intentando eliminar la vacunación"));
-};
-module.exports.deleteRecord = deleteRecord;
+    .catch(() => ReE(res, "Error ocurrido intentando eliminar la vacunación"))
+}
+module.exports.deleteRecord = deleteRecord
 
 const deactivateRecord = (req, res) => {
+  const { id } = req.params
   return Vaccination.findOne({
     where: {
-      id: req.params.id,
+      id
     },
   })
     .then((vaccination) =>
@@ -361,21 +366,22 @@ const deactivateRecord = (req, res) => {
           const resp = {
             message: `Vacunación desactivada`,
             vaccination,
-          };
-          return ReS(res, resp, 200);
+          }
+          return ReS(res, resp, 200)
         })
         .catch(() =>
           ReE(res, "Error ocurrido intentando eliminar la vacunación")
         )
     )
-    .catch(() => ReE(res, "Error ocurrido intentando eliminar la vacunación"));
-};
-module.exports.deactivateRecord = deactivateRecord;
+    .catch(() => ReE(res, "Error ocurrido intentando eliminar la vacunación"))
+}
+module.exports.deactivateRecord = deactivateRecord
 
 const restoreRecord = (req, res) => {
+  const { id } = req.params
   return Vaccination.findOne({
     where: {
-      id: req.params.id,
+      id
     },
   })
     .then((vaccination) =>
@@ -385,13 +391,13 @@ const restoreRecord = (req, res) => {
           const resp = {
             message: `Vacunación restaurada`,
             vaccination,
-          };
-          return ReS(res, resp, 200);
+          }
+          return ReS(res, resp, 200)
         })
         .catch(() =>
           ReE(res, "Error ocurrido intentando restaurar la vacunación")
         )
     )
-    .catch(() => ReE(res, "Error ocurrido intentando restaurar la vacunación"));
-};
-module.exports.restoreRecord = restoreRecord;
+    .catch(() => ReE(res, "Error ocurrido intentando restaurar la vacunación"))
+}
+module.exports.restoreRecord = restoreRecord

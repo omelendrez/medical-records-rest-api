@@ -1,6 +1,6 @@
 const Status = require('../models').status
 const Sequelize = require('sequelize')
-const TableHints = Sequelize.TableHints;
+const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
 const { ReS, ReE, updateOrCreate } = require('../helpers')
 

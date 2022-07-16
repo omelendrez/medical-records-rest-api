@@ -5,6 +5,7 @@ const pe = require('parse-error')
 const cors = require('cors')
 require('dotenv').config()
 
+const company = require('./routes/company')
 const customer = require('./routes/customer')
 const pet = require('./routes/pet')
 const consultation = require('./routes/consultation')
@@ -24,13 +25,18 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 
+const connection = process.env.CLEARDB_DATABASE_URL?.split('/')
+const dbName = connection[connection.length - 1]
+
 models.sequelize.authenticate()
-  .then(() => console.log('Connected to SQL database:', CONFIG.db_name))
-  .catch(err => console.error('Unable to connect to SQL database:', CONFIG.db_name, err))
+  .then(() => {
+    console.log('Connected to SQL database:', dbName || CONFIG.db_name)
+  })
+  .catch(err => console.error('Unable to connect to SQL database:', dbName || CONFIG.db_name, err))
 
 if (CONFIG.app === 'dev') {
   models.sequelize.sync({ force: false }) //creates table if they do not already exist
-  // models.sequelize.sync({ force: true });//deletes all tables then recreates them useful for testing and development purposes
+  // models.sequelize.sync({ force: true })//deletes all tables then recreates them useful for testing and development purposes
 }
 
 app.use(function (req, res, next) {
@@ -47,6 +53,7 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use('/api/companies', company)
 app.use('/api/customers', customer)
 app.use('/api/pets', pet)
 app.use('/api/consultations', consultation)
