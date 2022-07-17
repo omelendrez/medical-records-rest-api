@@ -1,9 +1,12 @@
+const Sequelize = require('sequelize')
+const TableHints = Sequelize.TableHints
+
 const Status = require("../models").status
 const Profile = require("../models").profile
 const Company = require("../models").company
 const User = require("../models").user
 
-const { ReS, updateOrCreate } = require("../helpers")
+const { ReS, ReE, updateOrCreate } = require("../helpers")
 
 const STATUS = { ACTIVE: 'Activo', INACTIVE: 'Inactivo' }
 const PROFILES = { ADMIN: 'Administrator', USER: 'User', READONLY: 'Readonly' }
@@ -97,7 +100,27 @@ const seedUsers = (profiles, statusId, companyId) => {
   })
 }
 
+const getUsers = () => {
+  return new Promise((resolve, reject) => {
+    User.findAndCountAll({
+      tableHint: TableHints.NOLOCK,
+      attributes: [
+        'name',
+        'companyId',
+        'profileId'
+      ]
+    })
+      .then((r) => {
+        resolve(r)
+      })
+  })
+}
+
 const seed = async (_, res) => {
+  const existingUsers = await getUsers()
+  if (existingUsers.count > 0) {
+    return ReE(res, { message: 'Database already seeded' }, 400)
+  }
   const statusId = await seedStatus()
   const profiles = await seedProfiles()
   const companyId = await seedCompanies(statusId)
