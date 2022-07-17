@@ -9,6 +9,7 @@ module.exports = (app) => {
   require('./status')(app)
   require('./user')(app)
   require('./vaccination')(app)
+  require('./database')(app)
   app.get('/wake-up', (_, res) => res.status(200).send({
     success: true,
     message: 'Vet Medical Records API',
