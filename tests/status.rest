@@ -1,5 +1,6 @@
+https://medical-records-rest-api.herokuapp.com/api/
 ### Crear registro
-POST http://localhost:3000/api/status
+POST https://medical-records-rest-api.herokuapp.com/api/status
 content-type: application/json
 
 {
@@ -7,4 +8,4 @@ content-type: application/json
 }
 
 ### Listar status
-GET http://localhost:3000/api/status
+GET https://medical-records-rest-api.herokuapp.com/api/status

@@ -47,8 +47,8 @@ module.exports.verifyDelete = (models, where) => {
   })
 }
 
-module.exports.ACTIVE = 1
-module.exports.INACTIVE = 11
+module.exports.ACTIVE = 4
+module.exports.INACTIVE = 14
 
 module.exports.updateCustomerBalance = async customerId => {
   const sequelize = require('sequelize')

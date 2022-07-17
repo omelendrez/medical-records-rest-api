@@ -15,17 +15,17 @@ content-type: application/json
 }
 
 ### Actualizar registro
-PUT http://localhost:3000/api/companies/4
+PUT https://medical-records-rest-api.herokuapp.com/api/companies/4
 content-type: application/json
 
 {
-    "name": "Veterinaria ACME",
+    "name": "Test Veterinaria",
     "address": "Calle falsa 123",
     "mobile": "123456789",
     "city": "Madrid",
-    "state": "España",
-    "observations": "Esta es una cuenta de prueba",
-    "statusId": 1
+    "state": "Madrid",
+    "observations": "Esta es una cuenta de tests",
+    "statusId": 4
 }
 
 ### Lista los saldos
