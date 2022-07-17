@@ -10,7 +10,7 @@ const create = async (req, res) => {
   const { name, phone } = req.body
 
   if (!name || !phone) {
-    return ReE(res, { success: false, message: 'Faltan datos. Complete los datos faltantes y vuelva a intentar' }, 422)
+    return ReE(res, { success: false, message: 'Faltan datos. Nombre y teléfono son obligatorios' }, 422)
   }
   /*
   if (!id) {

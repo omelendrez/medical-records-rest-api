@@ -3,17 +3,17 @@ POST http://localhost:3000/api/companies
 content-type: application/json
 
 {
-    "name": "Veterinaria ACME",
+    "name": "Test Veterinaria",
     "address": "Calle falsa 123",
     "mobile": "123456789",
     "city": "Madrid",
     "state": "Madrid",
-    "observations": "Esta es una cuenta de prueba",
+    "observations": "Esta es una cuenta de tests",
     "statusId": 1
 }
 
 ### Actualizar registro
-PUT http://localhost:3000/api/companies/2
+PUT http://localhost:3000/api/companies/1
 content-type: application/json
 
 {

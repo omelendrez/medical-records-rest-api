@@ -37,9 +37,9 @@ const getAll = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK
     })
-    .then(accounts => res
+    .then(companies => res
       .status(200)
-      .json({ success: true, accounts }))
+      .json({ success: true, companies }))
     .catch(err => ReE(res, err, 422))
 }
 module.exports.getAll = getAll

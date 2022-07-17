@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const bcryptPromise = require('bcrypt-promise')
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
+    companyId: DataTypes.INTEGER,
     name: DataTypes.STRING,
     password: DataTypes.STRING,
     statusId: {
