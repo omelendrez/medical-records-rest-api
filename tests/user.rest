@@ -1,9 +1,9 @@
 ### Crear registro
-POST http://localhost:3000/api/users
+POST https://medical-records-rest-api.herokuapp.com/api/users
 content-type: application/json
 
 {
-    "companyId": 1,
+    "companyId": 4,
     "name": "visitante",
     "password": "695379"
 }
