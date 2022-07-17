@@ -1,9 +1,6 @@
-const express = require('express')
-const router = express.Router()
-
 const Account = require('../controllers/account')
+module.exports = app => {
+  app.post('/accounts/', Account.create)
+  app.get('/accounts/:id', Account.getAll)
+}
 
-router.post('/', Account.create)
-router.get('/:id', Account.getAll)
-
-module.exports = router

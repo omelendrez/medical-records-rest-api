@@ -1,11 +1,7 @@
-const express = require('express')
-const router = express.Router()
-
 const Company = require('../controllers/company')
-
-router.post('/', Company.create)
-router.get('/', Company.getAll)
-router.get('/:id', Company.getById)
-router.put('/:id', Company.create)
-
-module.exports = router
+module.exports = app => {
+  app.post('/companies/', Company.create)
+  app.get('/companies/', Company.getAll)
+  app.get('/companies/:id', Company.getById)
+  app.put('/companies/:id', Company.create)
+}

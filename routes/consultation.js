@@ -1,16 +1,12 @@
-const express = require('express')
-const router = express.Router()
-
 const Consultation = require('../controllers/consultation')
-
-router.get('/', Consultation.getAll)
-router.get('/inactive', Consultation.getInactive)
-router.get('/programmed-visits', Consultation.getnextAppointments)
-router.get('/by-pet/:id', Consultation.getByPet)
-router.get('/:id', Consultation.getById)
-router.post('/', Consultation.create)
-router.delete('/:id', Consultation.deleteRecord)
-router.put('/:id', Consultation.deactivateRecord)
-router.put('/:id/restore', Consultation.restoreRecord)
-
-module.exports = router
+module.exports = app => {
+  app.get('/consultations/', Consultation.getAll)
+  app.get('/consultations/inactive', Consultation.getInactive)
+  app.get('/consultations/programmed-visits', Consultation.getnextAppointments)
+  app.get('/consultations/by-pet/:id', Consultation.getByPet)
+  app.get('/consultations/:id', Consultation.getById)
+  app.post('/consultations/', Consultation.create)
+  app.delete('/consultations/:id', Consultation.deleteRecord)
+  app.put('/consultations/:id', Consultation.deactivateRecord)
+  app.put('/consultations/:id/restore', Consultation.restoreRecord)
+}

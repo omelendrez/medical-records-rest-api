@@ -1,9 +1,5 @@
-const express = require('express')
-const router = express.Router()
-
 const Status = require('../controllers/status')
-
-router.get('/', Status.getAll)
-router.post('/', Status.create)
-
-module.exports = router
+module.exports = app => {
+  app.get('/status/', Status.getAll)
+  app.post('/status/', Status.create)
+}

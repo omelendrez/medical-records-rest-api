@@ -1,16 +1,12 @@
-const express = require('express')
-const router = express.Router()
-
 const Customer = require('../controllers/customer')
-
-router.get('/', Customer.getAll)
-router.get('/inactive', Customer.getInactive)
-router.get('/debtors', Customer.getDebtors)
-router.get('/debtors/:id', Customer.getBalanceById)
-router.get('/:id', Customer.getById)
-router.post('/', Customer.create)
-router.delete('/:id', Customer.deleteRecord)
-router.put('/:id', Customer.deactivateRecord)
-router.put('/:id/restore', Customer.restoreRecord)
-
-module.exports = router
+module.exports = app => {
+  app.get('/customers/', Customer.getAll)
+  app.get('/customers/inactive', Customer.getInactive)
+  app.get('/customers/debtors', Customer.getDebtors)
+  app.get('/customers/debtors/:id', Customer.getBalanceById)
+  app.get('/customers/:id', Customer.getById)
+  app.post('/customers/', Customer.create)
+  app.delete('/customers/:id', Customer.deleteRecord)
+  app.put('/customers/:id', Customer.deactivateRecord)
+  app.put('/customers/:id/restore', Customer.restoreRecord)
+}

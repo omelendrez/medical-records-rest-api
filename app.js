@@ -5,16 +5,6 @@ const pe = require('parse-error')
 const cors = require('cors')
 require('dotenv').config()
 
-const company = require('./routes/company')
-const customer = require('./routes/customer')
-const pet = require('./routes/pet')
-const consultation = require('./routes/consultation')
-const vaccination = require('./routes/vaccination')
-const deworming = require('./routes/deworming')
-const account = require('./routes/account')
-const status = require('./routes/status')
-const user = require('./routes/user')
-
 const models = require('./models')
 const CONFIG = require('./config')
 
@@ -53,20 +43,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use('/api/companies', company)
-app.use('/api/customers', customer)
-app.use('/api/pets', pet)
-app.use('/api/consultations', consultation)
-app.use('/api/vaccinations', vaccination)
-app.use('/api/dewormings', deworming)
-app.use('/api/accounts', account)
-app.use('/api/status', status)
-app.use('/api/users', user)
-
-app.use('/', function (req, res) {
-  res.statusCode = 422
-  res.json({ success: false, error: 'Endpoint not found', data: {} })
-})
+require("./routes")(app)
 
 app.use(function (req, res, next) {
   var err = new Error('Not Found')

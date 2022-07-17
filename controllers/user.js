@@ -45,7 +45,9 @@ const getAll = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       attributes: [
-        'name'
+        'name',
+        'companyId',
+        'profileId'
       ]
     })
     .then(users => res

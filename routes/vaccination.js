@@ -1,16 +1,12 @@
-const express = require('express')
-const router = express.Router()
-
 const Vaccination = require('../controllers/vaccination')
-
-router.get('/', Vaccination.getAll)
-router.get('/inactive', Vaccination.getInactive)
-router.get('/programmed-visits', Vaccination.getnextAppointments)
-router.get('/by-pet/:id', Vaccination.getByPet)
-router.get('/:id', Vaccination.getById)
-router.post('/', Vaccination.create)
-router.delete('/:id', Vaccination.deleteRecord)
-router.put('/:id', Vaccination.deactivateRecord)
-router.put('/:id/restore', Vaccination.restoreRecord)
-
-module.exports = router
+module.exports = app => {
+  app.get('/vaccinations/', Vaccination.getAll)
+  app.get('/vaccinations/inactive', Vaccination.getInactive)
+  app.get('/vaccinations/programmed-visits', Vaccination.getnextAppointments)
+  app.get('/vaccinations/by-pet/:id', Vaccination.getByPet)
+  app.get('/vaccinations/:id', Vaccination.getById)
+  app.post('/vaccinations/', Vaccination.create)
+  app.delete('/vaccinations/:id', Vaccination.deleteRecord)
+  app.put('/vaccinations/:id', Vaccination.deactivateRecord)
+  app.put('/vaccinations/:id/restore', Vaccination.restoreRecord)
+}
