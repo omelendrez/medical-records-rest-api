@@ -3,20 +3,35 @@ POST https://medical-records-rest-api.herokuapp.com/api/users
 content-type: application/json
 
 {
-    "companyId": 4,
-    "name": "visitante",
-    "password": "695379"
+  "id": 1,
+  "email": "omar.melendrez@gmail.com",
+  "name": "Omar",
+  "companyId": 1,
+  "profileId": 2,
+  "password": "Master1*"
 }
 
-### Lista los saldos
-GET http://localhost:3000/api/users
+### Lista los usuarios
+GET http://localhost:3000/users
 
 ### Login
-POST http://localhost:3000/api/users/login
+POST http://localhost:3000/users/login
 content-type: application/json
 
 {
-    "companyId": 4,
-    "name": "visitante",
-    "password": "695379"
+  "companyId": 4,
+  "name": "visitante",
+  "password": "695379"
+}
+
+### Update
+PUT http://localhost:3000/users/1
+content-type: application/json
+
+{
+  "id": 1,
+  "email": "omar.melendrez@gmail.com",
+  "name": "Omar",
+  "companyId": 1,
+  "profileId": 2
 }

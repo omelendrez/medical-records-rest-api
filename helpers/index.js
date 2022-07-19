@@ -1,3 +1,5 @@
+const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
+
 module.exports.updateOrCreate = (model, where, newItem, beforeCreate) => {
   return new Promise((resolve, reject) => {
     model
@@ -101,3 +103,5 @@ module.exports.updateCustomerBalance = async customerId => {
       customer.update({ balance: total })
     })
 }
+
+module.exports.isValidEmail = email => emailRegex.test(email)

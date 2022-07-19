@@ -3,20 +3,24 @@ const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
 const sequelize = require("sequelize")
-const { ReS, ReE, updateOrCreate } = require('../helpers')
+const { ReS, ReE, updateOrCreate, isValidEmail } = require('../helpers')
 
 const create = async (req, res) => {
   const { id } = req.params
-  const { name, password } = req.body
+  const { name, email, password } = req.body
 
-  const user = await User.findOne({ where: { name } })
+  const user = await User.findOne({ where: { email } })
 
   if (user) {
-    return ReE(res, { success: false, message: 'Ya existe un usuario con ese nombre' }, 422)
+    return ReE(res, { success: false, message: 'Ya existe un usuario con ese email' }, 422)
   }
 
-  if (!name || (!password)) {
-    return ReE(res, { success: false, message: 'Usuario y Password son campos obligatorios' }, 422)
+  if (!name || !email || !password) {
+    return ReE(res, { success: false, message: 'Todos los campos son obligatorios' }, 422)
+  }
+
+  if (!isValidEmail(email)) {
+    return ReE(res, { success: false, message: 'No es un email válido' }, 422)
   }
 
   await updateOrCreate(User,
@@ -45,6 +49,8 @@ const getAll = (req, res) => {
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       attributes: [
+        'id',
+        'email',
         'name',
         'companyId',
         'profileId'
@@ -78,15 +84,25 @@ const update = async (req, res) => {
 module.exports.update = update
 
 const login = async (req, res) => {
-  const { name, password } = req.body
-  if (!name || !password) {
-    return ReE(res, 'Usuario y Password son campos obligatorios', 401)
+  const { email, password } = req.body
+
+  if (!email) {
+    return ReE(res, 'El email es obligatorio', 400)
   }
+
+  if (!password) {
+    return ReE(res, 'La password es obligatoria', 400)
+  }
+
+  if (!isValidEmail(email)) {
+    return ReE(res, { success: false, message: 'El email no es válido' }, 400)
+  }
+
   return User
-    .findOne({ where: { name } })
+    .findOne({ where: { email } })
     .then(user => {
       if (!user) {
-        return ReE(res, 'Usuario o Password incorrectos', 401)
+        return ReE(res, 'Credenciales  incorrectas', 401)
       }
       user.comparePassword(password)
         .then(user => {

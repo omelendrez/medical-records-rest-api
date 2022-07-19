@@ -28,16 +28,19 @@ const users = [
   {
     profileId: PROFILES.ADMIN,
     name: "Omar",
+    email: "omar.melendrez@gmail.com",
     password: "Master1*",
   },
   {
     profileId: PROFILES.USER,
     name: "Jorge",
+    email: "jorge@gmail.com",
     password: "123456",
   },
   {
     profileId: PROFILES.READONLY,
     name: "Visitante",
+    email: "visitante@gmail.com",
     password: "695379",
   },
 ]
@@ -104,11 +107,7 @@ const getUsers = () => {
   return new Promise((resolve, reject) => {
     User.findAndCountAll({
       tableHint: TableHints.NOLOCK,
-      attributes: [
-        'name',
-        'companyId',
-        'profileId'
-      ]
+      attributes: ['id']
     })
       .then((r) => {
         resolve(r)
@@ -119,7 +118,7 @@ const getUsers = () => {
 const seed = async (_, res) => {
   const existingUsers = await getUsers()
   if (existingUsers.count > 0) {
-    return ReE(res, { message: 'Database already seeded' }, 400)
+    return ReE(res, { message: 'Database already seeded' }, 422)
   }
   const statusId = await seedStatus()
   const profiles = await seedProfiles()
