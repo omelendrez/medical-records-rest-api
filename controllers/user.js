@@ -1,33 +1,27 @@
-const User = require('../models').user
 const Sequelize = require('sequelize')
 const TableHints = Sequelize.TableHints
 const Op = Sequelize.Op
-const sequelize = require("sequelize")
+const User = require('../models').user
+const Profile = require("../models").profile
+const Company = require("../models").company
 const { ReS, ReE, updateOrCreate } = require('../helpers')
 
+User.belongsTo(Profile, { foreignKey: 'profileId' })
+User.belongsTo(Company, { foreignKey: 'companyId' })
+
 const create = async (req, res) => {
-  const { id, name, password } = req.body
-
-  const user = await User.findOne({ where: { name } })
-
+  const { name, email, password } = req.body
+  const user = await User.findOne({ where: { email } })
   if (user) {
-    return ReE(res, { success: false, message: 'Ya existe un usuario con ese nombre' }, 422)
+    return ReE(res, { success: false, message: 'Ya existe un usuario con ese email' }, 422)
   }
-
-  if (!name || (!password)) {
-    return ReE(res, { success: false, message: 'Usuario y Password son campos obligatorios' }, 422)
+  if (!email || !name || !password) {
+    return ReE(res, { success: false, message: 'Email y Password son campos obligatorios' }, 422)
   }
-
   await updateOrCreate(User,
-    {
-      id: {
-        [Op.eq]: id
-      }
-    },
-    req.body
-  )
+    { id: { [Op.eq]: id } },
+    req.body)
     .then(record => {
-
       const resp = {
         message: 'Datos guardados satisfactoriamente',
         record
@@ -38,13 +32,20 @@ const create = async (req, res) => {
 }
 module.exports.create = create
 
-const getAll = (req, res) => {
-
+const getAll = (_, res) => {
+  const attributes = ['id', 'name']
   return User
     .findAndCountAll({
       tableHint: TableHints.NOLOCK,
       attributes: [
-        'name'
+        'id',
+        'name',
+        'email',
+        'statusId',
+      ],
+      include: [
+        { model: Profile, attributes },
+        { model: Company, attributes }
       ]
     })
     .then(users => res
@@ -55,14 +56,10 @@ const getAll = (req, res) => {
 module.exports.getAll = getAll
 
 const update = async (req, res) => {
-  const { name, password } = req.body
-  const { id } = res.params
   return User
-    .findOne({ where: { id } })
+    .findByPk(req.params.id)
     .then(user => {
-      user.update({
-        name, password
-      })
+      user.update({ ...req.body })
         .then(user => {
           res
             .status(200)
@@ -75,15 +72,15 @@ const update = async (req, res) => {
 module.exports.update = update
 
 const login = async (req, res) => {
-  const { name, password } = req.body
-  if (!name || !password) {
-    return ReE(res, 'Usuario y Password son campos obligatorios', 401)
+  const { email, password } = req.body
+  if (!email || !password) {
+    return ReE(res, 'Email y Password son campos obligatorios', 401)
   }
   return User
-    .findOne({ where: { name } })
+    .findOne({ where: { email } })
     .then(user => {
       if (!user) {
-        return ReE(res, 'Usuario o Password incorrectos', 401)
+        return ReE(res, 'Email o Password incorrectos', 401)
       }
       user.comparePassword(password)
         .then(user => {

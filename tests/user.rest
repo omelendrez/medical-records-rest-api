@@ -19,9 +19,8 @@ POST http://localhost:3000/users/login
 content-type: application/json
 
 {
-  "companyId": 4,
-  "name": "visitante",
-  "password": "695379"
+  "email": "omar.melendrez@gmail.com",
+  "password": "Master1*"
 }
 
 ### Update
@@ -29,9 +28,9 @@ PUT http://localhost:3000/users/1
 content-type: application/json
 
 {
-  "id": 1,
   "email": "omar.melendrez@gmail.com",
-  "name": "Omar",
+  "name": "Omar Melendrez",
+  "password": "Master1*",
   "companyId": 1,
   "profileId": 2
 }

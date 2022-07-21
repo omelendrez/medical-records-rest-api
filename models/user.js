@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   User.beforeSave(async (user, options) => {
     if (user.changed('password')) {
       const salt = await bcrypt.genSalt(10)
-      console.log(salt)
       if (!salt) {
         throw new Error('Salt failed')
       }
@@ -31,10 +30,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
 
-  User.prototype.comparePassword = async function (pw) {
+  User.prototype.comparePassword = async function (pw, hash) {
     const pass = await bcryptPromise.compare(pw, this.password)
     if (!pass) {
-      throw new Error('Usuario o Password incorrectos')
+      throw new Error('Email o Password incorrectos')
     } else {
       return this
     }
